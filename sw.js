@@ -1,6 +1,6 @@
 // Mergy Monsters offline support.
 // The game is cached on first visit, so it opens and plays with no internet.
-const CACHE = 'tilt-monsters-v6';
+const CACHE = 'tilt-monsters-v7';
 const ASSETS = ['/', '/index.html', '/manifest.webmanifest',
   '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/icon-maskable-512.png'];
 
