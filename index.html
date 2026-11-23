@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#1a0c40">
 <title>Mergy Monsters</title>
+<meta name="description" content="Tilt the board, merge cute monsters and evolve them all! Free game with daily challenges, live duels with friends and a world leaderboard.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dorzeltzer-mergy-monsters.netlify.app/">
+<meta property="og:title" content="Mergy Monsters 👾 Tilt · Merge · Evolve">
+<meta property="og:description" content="Merge cute monsters, beat your friends in live duels and climb the world leaderboard. Free to play!">
+<meta property="og:image" content="https://dorzeltzer-mergy-monsters.netlify.app/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dorzeltzer-mergy-monsters.netlify.app/og.jpg">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -12,10 +22,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mergy Monsters">
-<meta name="description" content="Tilt the board, merge matching monsters and discover all 12! A cute puzzle game with daily challenges, coins and unlockable sets.">
-<meta property="og:title" content="Mergy Monsters">
-<meta property="og:description" content="Tilt, merge and evolve cute monsters. Can you summon Cosmo the Great?">
-<meta property="og:image" content="/icon-512.png">
 
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
 <style>
@@ -186,7 +192,7 @@ textarea{width:100%;border-radius:16px;border:1px dashed rgba(255,255,255,.3);ba
 .dIc{font-size:34px;animation:spin 10s linear infinite;display:inline-block}
 .dTx{flex:1;display:flex;flex-direction:column}.dTx b{font-size:19px;color:#4a2400}.dTx small{font-size:12.5px;color:#6a3a00;font-weight:500}
 .dGo{font-weight:700;font-size:16px;background:rgba(255,255,255,.45);color:#6a3a00;padding:6px 10px;border-radius:12px}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:min(340px,100%)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(340px,100%)}
 .tile{font-size:12.5px!important;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:12px 4px 10px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 6px 16px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .1s}
 .tile:active{transform:scale(.94)}
 .tile i{font-style:normal;font-size:26px}
@@ -329,6 +335,13 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
 .vs .mid{align-self:center;font-size:22px;font-weight:800}
 .drT{font-family:Lilita One,Fredoka;font-size:30px;text-align:center;margin:4px 0}
 .dLink{width:100%;font:600 13px ui-monospace,monospace;background:rgba(0,0,0,.3);border:1px dashed rgba(255,255,255,.3);border-radius:12px;padding:9px;word-break:break-all;text-align:center;user-select:all}
+.tile{position:relative}.tbadge{position:absolute;top:-6px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:#ff3b6b;color:#fff;font:800 12px Fredoka;font-style:normal;display:flex;align-items:center;justify-content:center;padding:0 6px;box-shadow:0 2px 8px rgba(255,59,107,.5);animation:pulseR .8s ease-in-out infinite alternate}
+#hamBtn,#undoBtn{padding:10px 12px;font:700 16px Fredoka;color:#fff;cursor:pointer}#hamBtn.on{background:linear-gradient(#ffd54a,#ff9a1f);color:#4a2200;box-shadow:0 0 18px rgba(255,200,60,.6)}
+#share{display:none}
+.qc{width:100%;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.22);padding:11px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;text-align:left}
+.qc.ready{border-color:#ffd54a;background:linear-gradient(90deg,rgba(255,213,74,.18),rgba(0,0,0,.2))}.qc.claimed{opacity:.55}
+.qc .qi{font-size:26px}.qc .qm{flex:1;min-width:0}.qc .qm b{display:block;font-size:14.5px}.qc .qb{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:6px}.qc .qb i{display:block;height:100%;background:linear-gradient(90deg,#6ae86a,#ffd54a);border-radius:99px}
+.qc small{font-size:12px;opacity:.8}.qc .qbtn{border:none;border-radius:12px;padding:8px 10px;font:800 13px Fredoka;background:linear-gradient(#6ae86a,#2fa84a);color:#fff;cursor:pointer;white-space:nowrap}.qc .qr{font:700 13px Fredoka;color:var(--gold);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -343,6 +356,7 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
  <div id="bottom">
   <div class="dock" id="nextBox"><small>NEXT</small><canvas id="nextC" width="88" height="88"></canvas></div>
   <div id="tip">Swipe to tilt ↑ ↓ ← →</div>
+  <button class="dock" id="hamBtn">🔨 <span id="hamN">0</span></button>
   <button class="dock" id="undoBtn">↶ <span id="undoN">3</span></button>
  </div>
 
@@ -371,6 +385,8 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
    <button class="tile" id="bRanks"><i>🏆</i>Rankings</button>
    <button class="tile" id="bDex"><i>📖</i>Collection</button>
    <button class="tile" id="bShop"><i>🛒</i>Shop</button>
+   <button class="tile" id="bQuests"><i>📋</i>Quests<em id="qBadge" class="tbadge" style="display:none">0</em></button>
+   <button class="tile" id="bInvite"><i>📣</i>Invite</button>
    <button class="tile" id="bHow"><i>❓</i>Help</button>
   </div>
  </div>
@@ -393,6 +409,23 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   <div class="sub" style="font-size:13.5px">Add a photo and a name for each level. #1 is the smallest, #12 is the biggest 👑</div>
   <div id="famGrid"></div>
   <button class="btn ghost" id="bFamBack">Done</button>
+ </div></div>
+
+ <div id="quests" class="ov"><div class="sheet">
+  <h2>📋 Daily Quests</h2>
+  <div class="sub" style="font-size:13.5px">New quests every day. Finish them for bonus coins!</div>
+  <div id="qList"></div>
+  <div class="sub" id="qTimer"></div>
+  <button class="btn ghost" id="bQBack">Back</button>
+ </div></div>
+
+ <div id="invite" class="ov"><div class="sheet">
+  <h2>📣 Invite Friends</h2>
+  <div class="sub" style="font-size:14px">Share Mergy Monsters! Friends who open your link get a <b>welcome gift of 200 🪙</b> 🎁</div>
+  <img id="invImg" alt="" style="width:100%;max-width:300px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+  <button class="btn" id="bInvShare">📤 Share the game</button>
+  <div class="sub" id="invSt"></div>
+  <button class="btn ghost" id="bInvBack">Back</button>
  </div></div>
 
  <div id="duel" class="ov"><div class="sheet">
@@ -432,7 +465,8 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   <button class="btn" id="bNextLv" style="display:none">▶ Next level</button>
   <button class="btn" id="bAgain">↻ Play again</button>
   <textarea id="share" rows="3" readonly></textarea>
-  <button class="btn blue" id="bCopy" style="font-size:16px;padding:11px">📋 Copy score to share</button>
+  <button class="btn blue" id="bShareImg" style="font-size:16px;padding:11px">📸 Share my score</button>
+  <button class="btn ghost" id="bCopy" style="font-size:14px;padding:9px">📋 Copy text</button>
   <button class="btn ghost" id="bHome">🏠 Home</button>
   <div class="status" id="oStatus"></div>
  </div></div>
@@ -1765,7 +1799,7 @@ function tryMove(dir){
  if(merged.length){
   let pts=0;merged.forEach(g=>pts+=val(g.k));
   const combo=merged.length;if(combo>=2)pts=Math.round(pts*(1+.25*(combo-1)));
-  G.score+=pts;G.merges+=combo;
+  G.score+=pts;G.merges+=combo;qBump('merge',combo);qBump('tier',Math.max(...merged.map(g=>g.k)),true);
   const cg=merged.reduce((a,g)=>a+(g.k+1),0)+(combo>=2?combo*3:0);G.ce=(G.ce||0)+cg;addCoins(cg);
   {const top=Math.max(...merged.map(g=>g.k));if(IOS)G.hapPend=1;else haptic(combo>=2?[25+top*3,40,25+top*3,40,35+top*3]:18+top*4);}
   setTimeout(()=>{if(!G)return;
@@ -1889,14 +1923,14 @@ function drawNext(){nctx.clearRect(0,0,88,88);if(G&&G.next)drawFruit(nctx,G.next
 function updLadder(){if(G){const d=store.get('tm_disc',0);if(G.top>d&&!G.demo){store.set('tm_disc',G.top);}const g=$('#goalTxt');g.innerHTML='';if(G.top<MAXK){g.append('Next: ');const bb=document.createElement('b');bb.textContent=FRUITS[G.top+1].n;g.append(bb);}else{const bb=document.createElement('b');bb.textContent='👑 MAX LEVEL!';g.append(bb);}}
 const L=$('#ladder');if(!L.children.length)FRUITS.forEach((f,i)=>{const s=document.createElement('span');const im=document.createElement('img');im.src=fruitURL(i,48);im.alt=f.n;s.append(im);L.append(s);});
  [...L.children].forEach((s,i)=>{s.classList.toggle('on',!!G&&i<=G.top);s.classList.toggle('top',!!G&&i===G.top);});}
-function updHud(){if(!G)return;$('#undoN').textContent=G.undo;$('#undoBtn').disabled=G.mode==='rush'||G.mode==='duel'||!G.undo||!G.hist.length;$('#best').textContent=fmt(Math.max(bestFor(G.mode),G.score));
+function updHud(){if(!G)return;hamHud();$('#undoN').textContent=G.undo;$('#undoBtn').disabled=G.mode==='rush'||G.mode==='duel'||!G.undo||!G.hist.length;$('#best').textContent=fmt(Math.max(bestFor(G.mode),G.score));
  document.body.classList.toggle('rushing',G.mode==='rush'||G.mode==='duel');$('#mlabel').textContent=G.mode==='duel'?'⚔️ DUEL · '+(G.duel?G.duel.me:''):G.mode==='rush'?'TIME CHALLENGE · LV '+(G.rush?G.rush.lv+1:''):G.mode==='daily'?'DAILY · '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase():'CLASSIC';
  G.top=Math.max(G.top,...G.grid.filter(Boolean).map(g=>g.k),0);drawNext();updLadder();}
 function tipMsg(t){const e=$('#tip');e.textContent=t||'Swipe to tilt ↑ ↓ ← →';e.classList.toggle('warn',!!t&&/⚠️|Nothing/.test(t));}
 
 /* ---------- input ---------- */
 let sw=null;
-cvs.addEventListener('pointerdown',e=>{if(mode!=='play')return;ai();sw={x:e.clientX,y:e.clientY,done:false};try{cvs.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+cvs.addEventListener('pointerdown',e=>{if(mode!=='play')return;if(G&&G.hammer){e.preventDefault();hamHit(e);return;}ai();sw={x:e.clientX,y:e.clientY,done:false};try{cvs.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
 cvs.addEventListener('pointermove',e=>{if(!sw||sw.done)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y;if(Math.hypot(dx,dy)>28){sw.done=true;tryMove(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'));}});
 cvs.addEventListener('pointerup',()=>{sw=null;if(G&&G.hapPend){G.hapPend=0;if(AS.vib!==false)iosTap();}});cvs.addEventListener('touchend',()=>{if(G&&G.hapPend){G.hapPend=0;if(AS.vib!==false)iosTap();}});cvs.addEventListener('pointercancel',()=>{sw=null;});
 window.addEventListener('keydown',e=>{const m={ArrowLeft:'L',ArrowRight:'R',ArrowUp:'U',ArrowDown:'D',KeyA:'L',KeyD:'R',KeyW:'U',KeyS:'D'}[e.code];if(m){e.preventDefault();tryMove(m);}if(e.code==='KeyZ')doUndo();});
@@ -1967,9 +2001,15 @@ function greetTxt(){const h=new Date().getHours(),who=curSet==='monsters'?'Monst
 function refreshHome(){{const n=rushStars();$('#rSmall').textContent=n?'⭐ '+n+' / '+RUSH.length*3+' stars · beat the clock':'Beat the clock · 10 levels';}$('#greet').textContent=greetTxt();buildScene();buildLogo();updGift();buildCrew();const b=store.get('ft_best',0),d=bestFor('daily');{const hc=$('#hChips');hc.innerHTML='';const add=(l,v)=>{const s=document.createElement('span');s.className='chip';s.append(l+' ');const bb=document.createElement('b');bb.textContent=v;s.append(bb);hc.append(s);};if(b)add('👑 Best',fmt(b));add('🪙','');hc.lastChild.querySelector('b').className='coinN';updCoins();{const sb=document.createElement('button');sb.className='chip setChip';sb.textContent=SETS[curSet].e+' '+SETS[curSet].name+' ›';sb.onclick=()=>{ai();renderShop();show('shop');};hc.append(sb);}if(d)add('☀️ Today',fmt(d));}
  
  $('#dSmall').textContent=d?'Your best today: '+fmt(d)+' · try to beat it!':'Same monsters for everyone';
- const s=store.get('ft_save',null);const ok=s&&Array.isArray(s.grid)&&!(s.mode==='daily'&&s.day!==dayKey());$('#bCont').style.display=ok?'block':'none';
+ const s=store.get('ft_save',null);const ok=s&&Array.isArray(s.grid)&&(s.moves>0||s.score>0)&&!(s.mode==='daily'&&s.day!==dayKey());$('#bCont').style.display=ok?'block':'none';
  if(ok)$('#bCont').textContent='↻ Continue '+(s.mode==='daily'?'daily':'classic')+' · '+fmt(s.score);$('#bClassic').innerHTML='<span class="playIc">▶</span> '+(ok?'NEW GAME':'PLAY')+'<small>Classic mode</small>';}
 $('#bDaily').onclick=()=>start('daily');
+$('#hamBtn').onclick=()=>{ai();hamToggle();};
+$('#bQuests').onclick=()=>{ai();renderQuests();show('quests');};$('#bQBack').onclick=()=>{qBadge();refreshHome();show('home');};
+$('#bInvite').onclick=()=>{ai();const c=shareCard('A cute monster merging game!',Math.max(store.get('ft_best',0),0),Math.max(0,store.get('tm_disc',0)));$('#invImg').src=c.toDataURL('image/jpeg',.85);$('#invSt').textContent='';show('invite');};
+$('#bInvBack').onclick=()=>{refreshHome();show('home');};
+$('#bInvShare').onclick=async()=>{const url=SITE+'?ref='+pid();const c=shareCard('Come play with me! 👾',Math.max(store.get('ft_best',0),0),Math.max(0,store.get('tm_disc',0)));const r=await shareImage(c,'👾 Play Mergy Monsters with me! Merge cute monsters, beat my score. Free gift 🎁:',url);$('#invSt').textContent=r==='copied'?'✅ Link copied! Paste it to your friends.':r==='shared'?'🎉 Thanks for sharing!':'';};
+$('#bShareImg').onclick=async()=>{if(!G)return;const t=G.mode==='daily'?'Daily Challenge':G.mode==='rush'?'Time Challenge':G.mode==='duel'?'Duel':'My score';const c=shareCard(t,G.score,G.top||0);const r=await shareImage(c,'👾 I scored '+fmt(G.score)+' in Mergy Monsters! Can you beat me?',SITE);if(r==='copied')$('#bShareImg').textContent='✅ Link copied!';};
 document.querySelectorAll('#duelTime .tab').forEach(t=>t.onclick=()=>{duelT=+t.dataset.d;document.querySelectorAll('#duelTime .tab').forEach(x=>x.classList.toggle('on',x===t));});
 $('#bDuel').onclick=()=>{ai();if(!$('#duelMe').value)$('#duelMe').value=store.get('tm_name','')||'';show('duel');};
 $('#bDuelBack').onclick=()=>{refreshHome();show('home');};
@@ -1983,9 +2023,9 @@ $('#bHowOk').onclick=()=>{store.set('ft_how',1);if(G&&!G.over&&(mode==='howplay'
 $('#bRanks').onclick=()=>{if(NET)netLoad();rankTab=dailyList().length?'daily':'all';document.querySelectorAll('.tab[data-t]').forEach(x=>x.classList.toggle('on',x.dataset.t===rankTab));renderRanks();show('ranks');};
 $('#bRBack').onclick=()=>show('home');
 $('#bHome').onclick=()=>{mode='home';refreshHome();show('home');};
-$('#bMenu').onclick=()=>{if(mode==='play'){mode='pause';$('#bMHome').textContent=G&&G.mode==='rush'?'🏠 Quit challenge':'🏠 Home (game is saved)';show('menu');}else if(mode==='pause'){mode='play';show(null);}};
+$('#bMenu').onclick=()=>{if(mode==='play'){mode='pause';$('#bMHome').textContent=odLive()?'🏃 Leave duel (−'+FORFEIT+' 🪙)':G&&G.mode==='rush'?'🏠 Quit challenge':'🏠 Home (game is saved)';show('menu');}else if(mode==='pause'){mode='play';show(null);}};
 $('#bResume').onclick=()=>{mode='play';show(null);};
-$('#bMHome').onclick=()=>{save();mode='home';refreshHome();show('home');};
+$('#bMHome').onclick=()=>{if(odLive()){if(confirm('Leave the live duel? Leaving now counts as a loss and costs '+FORFEIT+' coins.'))odForfeit();return;}save();mode='home';refreshHome();show('home');};
 let musPrev=null;
 function updSoundIcons(){const ic=AS.music?'🎵':(AS.sfx?'🔊':'🔇');$('#bSound').textContent=ic;$('#bSound2').textContent=ic;}
 function renderMusic(){$('#swMusic').classList.toggle('on',AS.music);$('#swSfx').classList.toggle('on',AS.sfx);$('#swVib').classList.toggle('on',AS.vib!==false);$('#volMusic').value=AS.musVol;$('#volSfx').value=AS.sfxVol;
@@ -2116,8 +2156,8 @@ function renderRush(){const d=rushData(),L=$('#rushList');L.innerHTML='';$('#rSt
   if(!lock)b.onclick=()=>startRush(i);else b.onclick=()=>{S.bump();haptic(8);};g.append(b);});
  L.append(g);}
 function rushReward(lv,stars){return (lv+1)*60*stars;}
-function rushEnd(win,stuck){if(G.over&&!stuck)return;G.over=true;mode='over';store.set('tm_games',store.get('tm_games',0)+1);
- const R2=G.rush,lv=R2.lv,d=rushData(),prev=d[lv]||0;let stars=0,bonus=0;
+function rushEnd(win,stuck){if(G.over&&!stuck)return;G.over=true;mode='over';store.set('tm_games',store.get('tm_games',0)+1);if(NET){store.set('tm_lbq',localBody());netFlush();}
+ const R2=G.rush,lv=R2.lv,d=rushData(),prev=d[lv]||0;let stars=0,bonus=0;qBump('games',1);qBump('score',G.score,true);if(win)qBump('rush',1);
  if(win){const f=R2.left/R2.time;stars=f>=.4?3:f>=.2?2:1;if(stars>prev){bonus=rushReward(lv,stars)-rushReward(lv,prev);d[lv]=stars;store.set('tm_rush',d);addCoins(bonus);}S.unlock();confetti();haptic([30,40,30,40,60]);}
  document.querySelectorAll('#over .nameBox').forEach(n=>n.remove());
  $('#oTitle').textContent=win?'LEVEL '+(lv+1)+' COMPLETE!':stuck?'NO MORE ROOM!':"TIME'S UP!";
@@ -2130,6 +2170,64 @@ function rushEnd(win,stuck){if(G.over&&!stuck)return;G.over=true;mode='over';sto
  $('#bAgain').textContent=win?'↻ Try for more ⭐':'↻ Try again';
  const nx=$('#bNextLv');nx.style.display=win&&lv<RUSH.length-1?'block':'none';nx.onclick=()=>startRush(lv+1);
  setTimeout(()=>show('over'),win?500:0);}
+
+/* ---------- site link (for sharing) ---------- */
+const SITE=(/^https?:$/.test(location.protocol)&&!/claude|anthropic|usercontent/.test(location.hostname))?location.origin+'/':'https://dorzeltzer-mergy-monsters.netlify.app/';
+/* ---------- daily quests ---------- */
+const QPOOL=[
+ {t:'merge',i:'🔗',n:g=>'Make '+g+' merges',g:[40,80,150],r:[60,100,160]},
+ {t:'score',i:'⭐',n:g=>'Score '+fmt(g)+' in one game',g:[1500,3000,6000],r:[70,120,200]},
+ {t:'tier',i:'👾',n:g=>'Create a level '+(g+1)+' monster',g:[5,6,7],r:[70,120,200]},
+ {t:'daily',i:'☀️',n:()=>'Play the Daily Challenge',g:[1],r:[80]},
+ {t:'rush',i:'⏱️',n:()=>'Clear a Time Challenge level',g:[1],r:[90]},
+ {t:'duel',i:'⚔️',n:()=>'Play a duel with a friend',g:[1],r:[100]},
+ {t:'games',i:'🎮',n:g=>'Finish '+g+' games',g:[2,3],r:[60,90]}];
+function questsToday(){let q=store.get('tm_q',null);const d=dayKey();if(q&&q.day===d&&Array.isArray(q.list))return q;
+ let h=hashStr('quests-'+d)>>>0;const rnd=()=>{h=(Math.imul(h^h>>>15,2246822507)+0x9e3779b9)>>>0;return h/4294967296;};
+ const pool=QPOOL.slice(),list=[];while(list.length<3){const k=Math.floor(rnd()*pool.length),Q=pool.splice(k,1)[0],j=Math.floor(rnd()*Q.g.length);list.push({t:Q.t,g:Q.g[j],r:Q.r[j],p:0,ready:0,claimed:0});}
+ q={day:d,list};store.set('tm_q',q);return q;}
+function qBump(t,v,max){if(G&&G.demo)return;const q=questsToday();let ch=false;
+ for(const x of q.list){if(x.t!==t||x.ready)continue;const np=Math.min(x.g,max?Math.max(x.p,v):x.p+v);if(np!==x.p){x.p=np;ch=true;if(x.p>=x.g){x.ready=1;if(mode==='play')tipMsg('📋 Quest complete! Claim '+x.r+' 🪙 on the home screen');}}}
+ if(ch){store.set('tm_q',q);qBadge();}}
+function qBadge(){const q=questsToday(),n=q.list.filter(x=>x.ready&&!x.claimed).length,b=$('#qBadge');if(b){b.textContent=n;b.style.display=n?'flex':'none';}}
+function renderQuests(){const q=questsToday(),L=$('#qList');L.innerHTML='';
+ for(const x of q.list){const Q=QPOOL.find(z=>z.t===x.t),c=document.createElement('div');c.className='qc'+(x.claimed?' claimed':x.ready?' ready':'');
+  const showP=x.t==='tier'?(x.p>=x.g?1:0)+' / 1':fmt(x.p)+' / '+fmt(x.g),pct=x.t==='tier'?(x.ready?100:0):x.p/x.g*100;
+  c.innerHTML='<div class="qi">'+Q.i+'</div><div class="qm"><b></b><small></small><div class="qb"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
+  c.querySelector('b').textContent=Q.n(x.g);c.querySelector('small').textContent=x.claimed?'✓ Claimed':showP;
+  if(x.ready&&!x.claimed){const bt=document.createElement('button');bt.className='qbtn';bt.textContent='Claim +'+x.r+' 🪙';bt.onclick=()=>{x.claimed=1;store.set('tm_q',q);addCoins(x.r);coinSfx&&coinSfx();confetti();haptic(20);renderQuests();qBadge();};c.append(bt);}
+  else if(!x.claimed){const r=document.createElement('span');r.className='qr';r.textContent='🪙 '+x.r;c.append(r);}
+  L.append(c);}
+ const now=new Date(),t=new Date(now);t.setHours(24,0,0,0);const m=Math.round((t-now)/60000);$('#qTimer').textContent='🔄 New quests in '+Math.floor(m/60)+'h '+(m%60)+'m';}
+/* ---------- hammer power-up ---------- */
+const HAM_PRICE=300,HAM_PACK=3;
+const hamN=()=>store.get('tm_ham',1);
+function hamHud(){const b=$('#hamBtn');if(!b)return;$('#hamN').textContent=hamN();const off=G&&(G.mode==='rush'||G.mode==='duel');b.style.display=off?'none':'';b.classList.toggle('on',!!(G&&G.hammer));}
+function hamToggle(){if(!G||mode!=='play'||G.phase!=='idle')return;if(G.mode==='rush'||G.mode==='duel')return;
+ if(G.hammer){G.hammer=false;tipMsg('');hamHud();return;}
+ if(hamN()<1){if(coins<HAM_PRICE){tipMsg('🔨 '+HAM_PACK+' hammers cost '+HAM_PRICE+' 🪙 — keep merging!');S.bump();return;}
+  if(!confirm('Buy '+HAM_PACK+' hammers for '+HAM_PRICE+' coins?'))return;addCoins(-HAM_PRICE);store.set('tm_ham',HAM_PACK);S.unlock();}
+ G.hammer=true;tipMsg('🔨 Tap a monster to smash it!');hamHud();haptic(10);}
+function hamHit(e){const r=cvs.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,c=Math.floor((x-bx)/cs),rr=Math.floor((y-by)/cs);
+ if(c<0||rr<0||c>=N||rr>=N){G.hammer=false;tipMsg('');hamHud();return;}
+ const i=rr*N+c,g=G.grid[i];if(!g){tipMsg('🔨 Tap a monster, not an empty spot');return;}
+ G.hist=[];G.grid[i]=null;G.hammer=false;store.set('tm_ham',hamN()-1);
+ burst(X(c+.5),Y(rr+.5),FRUITS[g.k].c,22);G.rings.push({x:X(c+.5),y:Y(rr+.5),c:'#ffffff',life:.5});G.shake=8;S.over&&S.bump();haptic([20,30,40]);tipMsg('💥 Smash!');hamHud();updHud();save();}
+/* ---------- share my score (image) ---------- */
+function shareCard(title,score,topK){const W2=1080,c=document.createElement('canvas');c.width=W2;c.height=W2;const x=c.getContext('2d');
+ const g=x.createLinearGradient(0,0,0,W2);g.addColorStop(0,'#3a1f9a');g.addColorStop(1,'#120836');x.fillStyle=g;x.fillRect(0,0,W2,W2);
+ const rg=x.createRadialGradient(W2/2,560,40,W2/2,560,520);rg.addColorStop(0,'rgba(255,214,90,.35)');rg.addColorStop(1,'rgba(255,214,90,0)');x.fillStyle=rg;x.fillRect(0,0,W2,W2);
+ x.textAlign='center';x.fillStyle='#ffd54a';x.font='bold 92px "Lilita One", Fredoka, sans-serif';x.fillText('MERGY MONSTERS',W2/2,150);
+ x.fillStyle='rgba(255,255,255,.85)';x.font='600 46px Fredoka, sans-serif';x.fillText(title,W2/2,240);
+ try{x.drawImage(fruitImgFor(curSet,Math.max(0,Math.min(MAXK,topK)),360),W2/2-180,300,360,360);}catch(e){}
+ if(score>0){x.fillStyle='#fff';x.font='bold 150px "Lilita One", Fredoka, sans-serif';x.fillText(fmt(score),W2/2,820);x.fillStyle='#ffd54a';x.font='700 54px Fredoka, sans-serif';x.fillText('Can you beat me? 🎮',W2/2,910);}
+ else{x.fillStyle='#fff';x.font='bold 80px "Lilita One", Fredoka, sans-serif';x.fillText('Tilt · Merge · Evolve!',W2/2,790);x.fillStyle='#ffd54a';x.font='700 54px Fredoka, sans-serif';x.fillText('Free to play 🎁',W2/2,890);}
+ x.fillStyle='rgba(255,255,255,.7)';x.font='500 36px Fredoka, sans-serif';x.fillText(SITE.replace(/^https?:\/\//,'').replace(/\/$/,''),W2/2,1000);
+ return c;}
+async function shareImage(canvas,text,url){try{const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));const file=new File([blob],'mergy-monsters.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+' '+url});return 'shared';}}catch(e){if(e&&e.name==='AbortError')return '';}
+ return await shareText(text,url);}
+
 /* ---------- duels ---------- */
 let duelT=120,DP=null; // DP = pass&play session {seed,time,names:[a,b],scores:[]}
 const dClean=t=>String(t||'').replace(/[<>&"]/g,'').trim().slice(0,14);
@@ -2142,7 +2240,7 @@ async function shareText(txt,url){try{if(navigator.share){await navigator.share(
 function dBtn(label,sub,fn,cls){const b=document.createElement('button');b.className='btn'+(cls?' '+cls:'');b.innerHTML=label+(sub?'<small>'+sub+'</small>':'');b.onclick=fn;return b;}
 function vsHTML(a,as,b,bs){const w=as>bs?0:bs>as?1:-1;const e=s=>String(s).replace(/[<>&]/g,'');
  return '<div class="vs"><div class="pl'+(w===0?' win':'')+'"><b>'+(w===0?'👑 ':'')+e(a)+'</b><span>'+fmt(as)+'</span></div><div class="mid">VS</div><div class="pl'+(w===1?' win':'')+'"><b>'+(w===1?'👑 ':'')+e(b)+'</b><span>'+fmt(bs)+'</span></div></div>';}
-function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D=G.duel,sc=G.score,time=G.rush.time;store.set('tm_games',store.get('tm_games',0)+1);
+function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D=G.duel,sc=G.score,time=G.rush.time;store.set('tm_games',store.get('tm_games',0)+1);qBump('games',1);qBump('score',sc,true);qBump('duel',1);if(NET){store.set('tm_lbq',localBody());netFlush();}
  if(D.online){odFinish(sc,stuck);return;}
  const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';const home=dBtn('🏠 Home','',()=>{DP=null;mode='home';refreshHome();show('home');},'ghost');
  if(DP){DP.scores.push(sc);
@@ -2164,13 +2262,27 @@ function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D
 /* ---------- live online duels (needs the website's /api/duel) ---------- */
 const CAN_LIVE=/^https?:$/.test(location.protocol)&&!/claude|anthropic|usercontent/.test(location.hostname);
 let OD=null; // {id,who,name,off,st,timer,round,played,endAt}
-async function odCall(body){const r=await fetch('/api/duel'+(body?'':'?id='+OD.id),body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'});
+async function odCall(body){const r=await apiFetch('duel',body?'':'?id='+OD.id,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{});
  let j={};try{j=await r.json();}catch(e){}if(j.now)OD&&(OD.off=j.now-Date.now());if(!r.ok)throw new Error(j.error||('the game server is not responding (error '+r.status+')'));return j;}
 const odOpp=()=>OD.who==='h'?'g':'h';
 const odOppName=()=>OD.st?(OD.who==='h'?OD.st.meta.g:OD.st.meta.h):'';
 function odStop(){if(OD&&OD.timer){clearInterval(OD.timer);OD.timer=null;}}
 function odLoop(ms){odStop();OD.timer=setInterval(odTick,ms);}
 function odLeave(){odStop();OD=null;mode='home';refreshHome();show('home');}
+const FORFEIT=300,FORFEIT_BONUS=100;
+const odLive=()=>!!(G&&G.mode==='duel'&&G.duel&&G.duel.online&&!G.over&&OD);
+function odPenalty(){const pen=Math.min(coins,FORFEIT);if(pen>0)addCoins(-pen);store.del('tm_duelLive');return pen;}
+async function odForfeit(why){if(!odLive())return;G.over=true;mode='over';const pen=odPenalty();
+ try{await odCall({a:'score',id:OD.id,who:OD.who,score:G.score,forfeit:true,round:OD.round});}catch(e){}
+ odStop();OD=null;S.over();haptic([40,60,40]);
+ $('#drBody').innerHTML='<div class="drT">🏃 You left the duel</div><div class="sub">'+(why||'Leaving in the middle counts as a loss.')+'</div><div class="drT" style="font-size:40px;color:#ff8a8a">−'+fmt(pen)+' 🪙</div>';
+ const b=$('#drBtns');b.innerHTML='';b.append(dBtn('🏠 Home','',()=>{mode='home';refreshHome();show('home');},'ghost'));show('duelRes');}
+function checkDuelQuit(){const L=store.get('tm_duelLive',null);if(!L)return;store.del('tm_duelLive');if(Date.now()-L.t>2*86400000)return;
+ const pen=Math.min(coins,FORFEIT);if(pen>0)addCoins(-pen);
+ if(CAN_LIVE&&L.id){apiFetch('duel','',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({a:'score',id:L.id,who:L.who,score:L.score||0,forfeit:true,round:L.round})}).catch(()=>{});}
+ $('#drBody').innerHTML='<div class="drT">🏃 You left a live duel</div><div class="sub">The game was closed in the middle of a duel, so it counts as a loss.</div><div class="drT" style="font-size:40px;color:#ff8a8a">−'+fmt(pen)+' 🪙</div>';
+ const b=$('#drBtns');b.innerHTML='';b.append(dBtn('OK','',()=>{refreshHome();show('home');},'ghost'));setTimeout(()=>show('duelRes'),500);}
+let odHidAt=0;document.addEventListener('visibilitychange',()=>{if(!odLive())return;if(document.hidden)odHidAt=Date.now();else if(odHidAt&&Date.now()-odHidAt>15000){odHidAt=0;odForfeit('You left the app for too long during a live duel, so it counts as a loss.');}else odHidAt=0;});
 async function odTick(){if(!OD||OD.busy)return;OD.busy=true;
  try{const live=G&&G.mode==='duel'&&G.duel.online&&!G.over;
   const j=live?await odCall({a:'score',id:OD.id,who:OD.who,score:G.score,round:OD.round}):await odCall();OD.st=j;odUpdate();}
@@ -2182,7 +2294,7 @@ function odLobby(){const st=OD.st,m=st.meta,opp=odOppName(),host=OD.who==='h';
  if(!m.g){body.innerHTML='<div class="drT">🌐 Live Duel</div><div class="sub">Send this link to your friend. When they open it, you’ll both play the <b>same board</b> at the <b>same time</b> — '+mmss(m.time)+'!</div><div class="dLink">'+odLink().replace(/^https?:\/\//,'')+'</div><div class="sub" id="odStatus">⏳ Waiting for your friend to join…</div>';
   const note=document.createElement('div');note.className='sub';
   btns.append(dBtn('📤 Send link','WhatsApp, messages…',async()=>{const r=await shareText('⚔️ '+OD.name+' wants to play Mergy Monsters with you, live! Tap to join:',odLink());note.textContent=r==='copied'?'✅ Link copied! Paste it to your friend.':'';}),note,dBtn('✕ Cancel','',odLeave,'ghost'));}
- else{body.innerHTML='<div class="drT">'+(host?'🎉 '+opp+' joined!':'✅ You joined!')+'</div>'+vsHTML(m.h,0,m.g,0).replace(/<span>0<\/span>/g,'<span>⚔️</span>')+'<div class="sub">Same board · '+mmss(m.time)+' · no undos</div><div class="sub" id="odStatus">'+(host?'Press start when you are both ready!':'⏳ Waiting for '+m.h+' to start…')+'</div>';
+ else{body.innerHTML='<div class="drT">'+(host?'🎉 '+opp+' joined!':'✅ You joined!')+'</div>'+vsHTML(m.h,0,m.g,0).replace(/<span>0<\/span>/g,'<span>⚔️</span>')+'<div class="sub">Same board · '+mmss(m.time)+' · no undos<br>⚠️ Leaving in the middle costs <b>'+FORFEIT+' 🪙</b></div><div class="sub" id="odStatus">'+(host?'Press start when you are both ready!':'⏳ Waiting for '+m.h+' to start…')+'</div>';
   if(host)btns.append(dBtn('▶ Start!','',async()=>{try{OD.st=await odCall({a:'start',id:OD.id});odUpdate();}catch(e){$('#odStatus').textContent='⚠️ '+e.message;}}));
   btns.append(dBtn('✕ Leave','',odLeave,'ghost'));}
  if(mode!=='odLobby'){mode='odLobby';show('duelRes');}}
@@ -2191,23 +2303,27 @@ function odCountdown(){const m=OD.st.meta,startLocal=m.start-OD.off,left=Math.ce
   if(OD.lastCd!==left){OD.lastCd=left;tone(660,.08,.06,'triangle');haptic(15);}if(mode!=='odLobby'){mode='odLobby';show('duelRes');}
   clearTimeout(OD.cdT);OD.cdT=setTimeout(odCountdown,Math.max(30,(startLocal-Date.now())%1000||1000));return;}
  if(OD.played===m.round)return;OD.played=m.round;OD.round=m.round;OD.lastCd=null;tone(990,.12,.08,'triangle');
- const me=OD.name,opp=odOppName();startDuel(m.seed,m.time,me,0,opp);G.duel.online=true;G.duel.t0=startLocal;G.rush.left=Math.max(0,m.time-(Date.now()-startLocal)/1000);odLoop(1500);}
+ const me=OD.name,opp=odOppName();startDuel(m.seed,m.time,me,0,opp);G.duel.online=true;store.set('tm_duelLive',{id:OD.id,who:OD.who,round:m.round,score:0,t:Date.now()});G.duel.t0=startLocal;G.rush.left=Math.max(0,m.time-(Date.now()-startLocal)/1000);odLoop(1500);}
 function odUpdate(){const st=OD.st,m=st.meta;
- if(G&&G.mode==='duel'&&G.duel.online&&OD.played===m.round&&!G.over){const o=st[odOpp()];G.duel.opp=o?o.score:0;G.duel.oppName=odOppName();rushHud();return;}
+ if(G&&G.mode==='duel'&&G.duel.online&&OD.played===m.round&&!G.over){const o=st[odOpp()];G.duel.opp=o?o.score:0;G.duel.oppName=odOppName();
+  {const L=store.get('tm_duelLive',null);if(L){L.score=G.score;store.set('tm_duelLive',L);}}
+  if(o&&o.forfeit){tipMsg('🏃 '+odOppName()+' left the game — you win!');G.over=true;mode='over';odFinish(G.score);return;}
+  const stale=o&&(st.now-o.ts>12000);if(stale&&!OD.warned){OD.warned=1;tipMsg('📴 '+odOppName()+' lost connection…');}if(!stale)OD.warned=0;
+  rushHud();return;}
  if(m.start&&OD.played!==m.round){if(m.start-OD.off>Date.now()-2000||mode==='odLobby'||mode==='odWait'){odCountdown();return;}}
  if(OD.played===m.round&&G&&G.over){odResult();return;}
  if(!m.start||OD.played!==m.round)odLobby();}
-async function odFinish(sc){OD.myFinal=sc;try{OD.st=await odCall({a:'score',id:OD.id,who:OD.who,score:sc,done:true,round:OD.round});}catch(e){}
+async function odFinish(sc){OD.myFinal=sc;store.del('tm_duelLive');try{OD.st=await odCall({a:'score',id:OD.id,who:OD.who,score:sc,done:true,round:OD.round});}catch(e){}
  OD.endAt=Date.now();odLoop(1000);odResult();}
 function odResult(){const st=OD.st,m=st.meta,me=st[OD.who],o=st[odOpp()],opp=odOppName(),my=OD.myFinal!=null?OD.myFinal:(me?me.score:0);
  const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';
  const oppDone=o&&o.done,gaveUp=!oppDone&&Date.now()-OD.endAt>15000;
  if(!oppDone&&!gaveUp){body.innerHTML='<div class="drT">Time’s up!</div><div class="sub">Your score</div><div class="drT" style="font-size:44px">'+fmt(my)+'</div><div class="sub" id="odStatus">⏳ Waiting for '+opp+' to finish… ('+fmt(o?o.score:0)+' so far)</div>';
   if(mode!=='odWait'){mode='odWait';show('duelRes');}return;}
- const os=o?o.score:0,win=my>os,tie=my===os;
- if(OD.shownRound!==m.round){OD.shownRound=m.round;if(win){confetti();S.unlock();}}
+ const left=o&&o.forfeit,os=o?o.score:0,win=left||my>os,tie=!left&&my===os;
+ if(OD.shownRound!==m.round){OD.shownRound=m.round;if(win){confetti();S.unlock();if(left){addCoins(FORFEIT_BONUS);}}}
  const hn=OD.who==='h'?OD.name:opp,gn=OD.who==='h'?opp:OD.name,hs=OD.who==='h'?my:os,gs=OD.who==='h'?os:my;
- body.innerHTML='<div class="drT">'+(win?'🏆 You win!':tie?'🤝 Tie!':'😅 '+opp+' wins!')+'</div>'+vsHTML(hn,hs,gn,gs)+(gaveUp?'<div class="sub">('+opp+' didn’t finish — maybe they lost connection)</div>':'')+'<div class="sub" id="odStatus">'+(OD.who==='h'?'':'Waiting for '+opp+' to start a rematch…')+'</div>';
+ body.innerHTML='<div class="drT">'+(win?'🏆 You win!':tie?'🤝 Tie!':'😅 '+opp+' wins!')+'</div>'+vsHTML(hn,hs,gn,gs)+(left?'<div class="sub">🏃 '+opp+' left the game early, so you win! <b>+'+FORFEIT_BONUS+' 🪙</b></div>':'')+(gaveUp?'<div class="sub">('+opp+' didn’t finish — maybe they lost connection)</div>':'')+'<div class="sub" id="odStatus">'+(OD.who==='h'?'':'Waiting for '+opp+' to start a rematch…')+'</div>';
  if(OD.who==='h')btns.append(dBtn('↻ Rematch','New board — starts for both of you',async()=>{try{OD.st=await odCall({a:'rematch',id:OD.id});OD.myFinal=null;odUpdate();}catch(e){$('#odStatus').textContent='⚠️ '+e.message;}}));
  btns.append(dBtn('🏠 Leave','',odLeave,'ghost'));
  if(mode!=='odWait'){mode='odWait';show('duelRes');}
@@ -2231,7 +2347,7 @@ function checkDuelLink(){try{const q=new URLSearchParams(location.search).get('d
   const nm=document.createElement('input');nm.className='dIn';nm.maxLength=14;nm.placeholder='Your name';nm.value=store.get('tm_name','')||'';
   const b=$('#drBtns');b.innerHTML='';b.append(nm,dBtn('⚔️ Accept challenge','',()=>{const me=dClean(nm.value)||'Me';store.set('tm_name',me);DP=null;startDuel(seed,time,me,opp,on);}),dBtn('Not now','',()=>{show('home');},'ghost'));
   setTimeout(()=>show('duelRes'),400);}catch(e){}}
-function gameOver(){{const eb=Math.floor(G.score/50);if(eb>0&&!G.demo){G.ce=(G.ce||0)+eb;addCoins(eb);}}$('#oBestL').textContent='BEST';$('#bNextLv').style.display='none';$('#bAgain').textContent='↻ Play again';store.set('tm_games',store.get('tm_games',0)+1);document.querySelectorAll('#over .nameBox').forEach(n=>n.remove());setTimeout(()=>{$('#oCoins').textContent=(G.ce?'🪙 +'+fmt(G.ce)+' coins earned · ':'')+'You have '+fmt(coins)+' 🪙';},0);
+function gameOver(){qBump('games',1);qBump('score',G.score,true);if(G.mode==='daily')qBump('daily',1);{const eb=Math.floor(G.score/50);if(eb>0&&!G.demo){G.ce=(G.ce||0)+eb;addCoins(eb);}}$('#oBestL').textContent='BEST';$('#bNextLv').style.display='none';$('#bAgain').textContent='↻ Play again';store.set('tm_games',store.get('tm_games',0)+1);document.querySelectorAll('#over .nameBox').forEach(n=>n.remove());setTimeout(()=>{$('#oCoins').textContent=(G.ce?'🪙 +'+fmt(G.ce)+' coins earned · ':'')+'You have '+fmt(coins)+' 🪙';},0);
  mode='over';const score=G.score,prev=bestFor(G.mode),isBest=score>prev;setBest(G.mode,score);
  $('#oTitle').textContent=G.mode==='daily'?'DAILY RUN COMPLETE':'NO MORE ROOM!';
  $('#oScore').textContent=fmt(score);
@@ -2264,32 +2380,41 @@ async function postScore(score,m){
  if(m==='daily'){const tl=dailyList().filter(r=>r.id!==myId);const above=tl.filter(r=>r.dayBest>body.dayBest).sort((a,b)=>a.dayBest-b.dayBest);
   $('#oRank').textContent='🌍 #'+(above.length+1)+' in today’s daily'+(above[0]?' · '+fmt(above[0].dayBest-body.dayBest+1)+' to pass '+nameOf(above[0].id):(tl.length?' · You’re on top! 👑':''));}
  else{const tl=rows.filter(r=>r.id!==myId&&r.best>0);$('#oRank').textContent='🌍 #'+(1+tl.filter(r=>r.best>body.best).length)+' all-time';}
- if(NET){store.set('tm_lbq',localBody());if(!myNick()){st.textContent='';const nb=nameBox(()=>{nb.remove();st.textContent=navigator.onLine?'🌍 You’re on the table!':'📴 Saved on your phone. It will upload when you’re online.';});st.after(nb);return;}
-  const ok=await netFlush();st.textContent=ok?'🌍 Saved to the table':'📴 Saved on your phone. It will upload when you’re online.';return;}
+ if(NET){store.set('tm_lbq',localBody());const ok=await netFlush();st.textContent=ok?'🌍 You’re on the table as '+myNick()+'!':'📴 Saved on your phone. It will upload when you’re online.';
+  if(!store.get('tm_name','')){const nb=nameBox(()=>{nb.remove();st.textContent='🌍 Name saved: '+myNick();});st.after(nb);}return;}
  if(!canPost){st.textContent='View-only: ask the owner for Contributor access to be ranked.';return;}
  try{await DB.doc('scores/'+myId).set(body);st.textContent='🌍 Saved to world rankings';}
  catch(err){if(err&&err.code==='invalid_argument'){canPost=false;st.textContent='View-only: ask the owner for Contributor access to be ranked.';}else st.textContent='Couldn’t reach rankings right now.';}}
 /* ---------- shared table on your own website (Netlify) ---------- */
 let NET=false;const API='/api/leaderboard';
+// Server functions live at /api/<name>; if the host didn't set up those short paths, fall back to Netlify's default /.netlify/functions/<name>.
+const API_BASE={};
+async function apiFetch(name,qs,opts){const urls=API_BASE[name]?[API_BASE[name]]:['/api/'+name,'/.netlify/functions/'+name];let r=null;
+ for(const u of urls){try{r=await fetch(u+(qs||''),Object.assign({cache:'no-store'},opts||{}));}catch(e){r=null;continue;}
+  if(r.status!==404){API_BASE[name]=u;return r;}}
+ return r||new Response('{}',{status:503});}
 function pid(){let id=store.get('tm_pid','');if(!/^[a-z0-9]{6,40}$/i.test(id)){id='p'+Math.random().toString(36).slice(2,10)+Date.now().toString(36);store.set('tm_pid',id);}return id;}
-const myNick=()=>store.get('tm_name','');
+const NICK_A=['Happy','Sneaky','Bouncy','Sleepy','Brave','Silly','Speedy','Fuzzy','Lucky','Mighty','Giggly','Sparkly'];
+const NICK_B=['Monster','Blob','Goo','Puff','Fang','Noodle','Bean','Pickle','Muffin','Comet'];
+function autoNick(){let n=store.get('tm_auto','');if(!n){n=NICK_A[Math.floor(Math.random()*NICK_A.length)]+NICK_B[Math.floor(Math.random()*NICK_B.length)]+Math.floor(10+Math.random()*90);store.set('tm_auto',n);}return n;}
+const myNick=()=>store.get('tm_name','')||(NET?autoNick():'');
 function applyNetRows(list){rows=[];if(!Array.isArray(list))return;for(const v of list){if(!v||typeof v.id!=='string')continue;const b=Number(v.best),t=Number(v.dayBest),tp=Number(v.top);
  rows.push({id:v.id,best:isFinite(b)&&b>=0&&b<1e9?Math.floor(b):0,day:typeof v.day==='string'?v.day.slice(0,10):'',dayBest:isFinite(t)&&t>=0&&t<1e9?Math.floor(t):0,top:isFinite(tp)?Math.max(0,Math.min(MAXK,Math.floor(tp))):0,games:Math.max(0,Math.floor(Number(v.games)||0))});
  names[v.id]=String(v.name||'Player').slice(0,16);}}
-async function netLoad(){try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});rStatus=store.get('tm_lbq',null)?'⏳ Your latest score will upload soon':'';}
+async function netLoad(){try{const r=await apiFetch('leaderboard');if(!r.ok)throw 0;const j=await r.json();applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});rStatus=store.get('tm_lbq',null)?'⏳ Your latest score will upload soon':'';}
  catch(e){const c=store.get('tm_lbcache',null);if(c){applyNetRows(c.players);rStatus='📴 Offline: showing the table from '+new Date(c.t).toLocaleString();}else rStatus='📴 You’re offline. The table will load when you’re back online.';}
  loaded=true;if($('#ranks').classList.contains('on'))renderRanks();}
 function localBody(){return{best:store.get('ft_best',0),day:dayKey(),dayBest:bestFor('daily'),top:Math.max(0,store.get('tm_disc',0)),games:store.get('tm_games',0)};}
 async function netFlush(){const body=store.get('tm_lbq',null);if(!body||!myNick())return false;
- try{const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({},body,{id:pid(),name:myNick()}))});if(!r.ok)throw 0;const j=await r.json();store.del('tm_lbq');applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});return true;}catch(e){return false;}}
+ try{const r=await apiFetch('leaderboard','',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({},body,{id:pid(),name:myNick()}))});if(!r.ok)throw 0;const j=await r.json();store.del('tm_lbq');applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});return true;}catch(e){return false;}}
 window.addEventListener('online',()=>{if(NET)netFlush().then(netLoad);});
-function nameBox(after){const w=document.createElement('div');w.className='nameBox';const t=document.createElement('div');t.className='sub';t.style.fontSize='14px';t.textContent=myNick()?'Your name on the table:':'Choose a name to join the table:';
- const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;width:100%';const i=document.createElement('input');i.maxLength=16;i.placeholder='Your name';i.value=myNick();i.className='nameIn';
+function nameBox(after){const w=document.createElement('div');w.className='nameBox';const t=document.createElement('div');t.className='sub';t.style.fontSize='14px';t.textContent=store.get('tm_name','')?'Your name on the table:':'Want your own name on the table?';
+ const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;width:100%';const i=document.createElement('input');i.maxLength=16;i.placeholder='Your name';i.value=store.get('tm_name','');i.className='nameIn';
  const b=document.createElement('button');b.className='sbtn buy';b.textContent='Save';b.onclick=async()=>{const v=i.value.replace(/[<>]/g,'').trim().slice(0,16);if(!v){i.focus();return;}store.set('tm_name',v);if(!store.get('tm_lbq',null))store.set('tm_lbq',localBody());b.textContent='✓';await netFlush();await netLoad();if(after)after();};
  row.append(i,b);w.append(t,row);return w;}
 async function initOnline(){try{
  if(!window.claude||typeof window.claude.use!=='function'){
-  if(/^https?:$/.test(location.protocol)){NET=true;online=true;myId=pid();canPost=true;await netFlush();netLoad();setInterval(()=>{if(NET&&navigator.onLine&&$('#ranks').classList.contains('on'))netLoad();},30000);}
+  if(/^https?:$/.test(location.protocol)){NET=true;online=true;myId=pid();canPost=true;if(store.get('ft_best',0)>0||store.get('tm_games',0)>0)store.set('tm_lbq',localBody());await netFlush();netLoad();setInterval(()=>{if(NET&&navigator.onLine&&$('#ranks').classList.contains('on'))netLoad();},30000);}
   return;}
  const[db,user]=await Promise.all([window.claude.use('db'),window.claude.use('user')]);
  if(!db||!user){rStatus='Sign in to join the world rankings.';return;}
@@ -2311,7 +2436,9 @@ newGame('classic',true);
 (function(){const hr=$('#homeRow');if(hr)[2,6,11,9,3].forEach((k,i)=>{const im=document.createElement('img');im.src=fruitURL(k,96);im.style.animationDelay=(i*.15)+'s';hr.append(im);});
  const hl=$('#howLadder');if(hl)FRUITS.forEach((f,i)=>{const im=document.createElement('img');im.src=fruitURL(i,48);hl.append(im);if(i<MAXK){const a=document.createElement('span');a.textContent='›';hl.append(a);}});})();
 document.addEventListener('pointerdown',()=>ai(),{once:true});
-refreshHome();checkDuelLink();checkRoomLink();
+(function(){try{const ref=new URLSearchParams(location.search).get('ref');if(ref&&/^[a-z0-9]{6,40}$/i.test(ref)&&ref!==pid()&&!store.get('tm_refGift',0)&&!store.get('tm_games',0)){store.set('tm_refGift',1);addCoins(200);setTimeout(()=>{$('#drBody').innerHTML='<div class="drT">🎁 Welcome!</div><div class="sub">A friend invited you to Mergy Monsters.<br>Here is a welcome gift:</div><div class="drT" style="font-size:46px;color:#ffd54a">+200 🪙</div>';const b=$('#drBtns');b.innerHTML='';b.append(dBtn('▶ Let’s play!','',()=>{refreshHome();show('home');}));show('duelRes');confetti();},600);}
+ if(ref)history.replaceState(null,'',location.pathname+location.search.replace(/[?&]ref=[^&]*/,'').replace(/^&/,'?'));}catch(e){}})();
+refreshHome();qBadge();checkDuelQuit();checkDuelLink();checkRoomLink();
 requestAnimationFrame(t=>{last=t;frame(t);});
 setTimeout(initOnline,0);
 </script>
