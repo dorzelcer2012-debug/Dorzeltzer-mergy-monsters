@@ -328,6 +328,7 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
 .vs .pl b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vs .pl span{display:block;font-size:30px;font-weight:800;font-family:Lilita One,Fredoka}
 .vs .mid{align-self:center;font-size:22px;font-weight:800}
 .drT{font-family:Lilita One,Fredoka;font-size:30px;text-align:center;margin:4px 0}
+.dLink{width:100%;font:600 13px ui-monospace,monospace;background:rgba(0,0,0,.3);border:1px dashed rgba(255,255,255,.3);border-radius:12px;padding:9px;word-break:break-all;text-align:center;user-select:all}
 </style>
 </head>
 <body>
@@ -401,7 +402,8 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   <div class="tabs" id="duelTime"><button class="tab" data-d="60">1:00</button><button class="tab on" data-d="120">2:00</button><button class="tab" data-d="180">3:00</button></div>
   <div class="dsec">👤 Your name</div>
   <input id="duelMe" class="dIn" maxlength="14" placeholder="Player 1">
-  <button class="btn" id="bDuelLink">🔗 Challenge a friend<small>Play, then send them a link</small></button>
+  <button class="btn" id="bDuelOnline" style="background:linear-gradient(#ffd54a,#ff9a1f);box-shadow:0 5px 0 #c06a10;color:#4a2200">🌐 Play live together<small>Send a link — you both play at the same time, each on your own phone</small></button>
+  <button class="btn" id="bDuelLink">🔗 Challenge a friend<small>Play now, they play later on the same board</small></button>
   <div class="dsec">📱 Same phone</div>
   <input id="duelP2" class="dIn" maxlength="14" placeholder="Player 2">
   <button class="btn alt" id="bDuelPass">📱 Pass &amp; Play<small>Take turns on this phone</small></button>
@@ -1792,9 +1794,9 @@ function update(dt){
   else{const pl=R2.left;R2.left=Math.max(0,R2.left-dt);if(R2.left<=5&&Math.ceil(pl)!==Math.ceil(R2.left)&&R2.left>0){tone(Math.ceil(R2.left)<=3?1320:990,.06,.05,'triangle');haptic(10);}
    if(R2.left<=0&&G.score<R2.goal)rushEnd(false);}
   rushHud();}
- if(G.mode==='duel'&&G.rush&&!G.over&&!G.demo&&mode==='play'){const R2=G.rush,pl=R2.left;R2.left=Math.max(0,R2.left-dt);
+ if(G.mode==='duel'&&G.rush&&!G.over&&!G.demo&&(mode==='play'||(G.duel.online&&mode==='pause'))){const R2=G.rush,pl=R2.left;R2.left=G.duel.online?Math.max(0,R2.time-(Date.now()-G.duel.t0)/1000):Math.max(0,R2.left-dt);
   if(R2.left<=5&&Math.ceil(pl)!==Math.ceil(R2.left)&&R2.left>0){tone(Math.ceil(R2.left)<=3?1320:990,.06,.05,'triangle');haptic(10);}
-  if(R2.left<=0&&G.phase==='idle')duelEnd();rushHud();}
+  if(R2.left<=0&&(G.phase==='idle'||G.duel.online)){if(mode==='pause'){mode='play';show(null);}duelEnd();}rushHud();}
  G.tilt.x*=Math.pow(.02,dt);G.tilt.y*=Math.pow(.02,dt);if(G.shake>0)G.shake=Math.max(0,G.shake-dt*40);
  for(const g of G.grid){if(!g)continue;g.x+=(g.col-g.x)*Math.min(1,dt*22);g.y+=(g.r-g.y)*Math.min(1,dt*22);if(g.s<1)g.s=Math.min(1,g.s+dt*5);if(g.bump>0){g.bump+=dt;if(g.bump>.4)g.bump=0;}}
  for(const h of G.ghosts){h.life-=dt;h.x+=(h.tc-h.x)*Math.min(1,dt*22);h.y+=(h.tr-h.y)*Math.min(1,dt*22);}G.ghosts=G.ghosts.filter(h=>h.life>0);
@@ -1972,6 +1974,7 @@ document.querySelectorAll('#duelTime .tab').forEach(t=>t.onclick=()=>{duelT=+t.d
 $('#bDuel').onclick=()=>{ai();if(!$('#duelMe').value)$('#duelMe').value=store.get('tm_name','')||'';show('duel');};
 $('#bDuelBack').onclick=()=>{refreshHome();show('home');};
 $('#bDuelLink').onclick=()=>{const me=myName();if(dClean($('#duelMe').value))store.set('tm_name',me);DP=null;startDuel((Math.random()*4294967296)>>>0,duelT,me,null);};
+$('#bDuelOnline').onclick=()=>{ai();odCreate();};
 $('#bDuelPass').onclick=()=>{const a=myName(),b=dClean($('#duelP2').value)||'Player 2';DP={seed:(Math.random()*4294967296)>>>0,time:duelT,names:[a,b],scores:[]};startDuel(DP.seed,DP.time,a,null);};$('#bRush').onclick=()=>{ai();renderRush();show('rush');};$('#bRushBack').onclick=()=>{refreshHome();show('home');};$('#bClassic').onclick=()=>start('classic');
 $('#bCont').onclick=()=>{ai();if(load()){mode='play';show(null);}else refreshHome();};
 $('#bAgain').onclick=()=>{if(G&&G.mode==='rush')startRush(G.rush.lv);else start(G?G.mode:'classic');};
@@ -2140,6 +2143,7 @@ function dBtn(label,sub,fn,cls){const b=document.createElement('button');b.class
 function vsHTML(a,as,b,bs){const w=as>bs?0:bs>as?1:-1;const e=s=>String(s).replace(/[<>&]/g,'');
  return '<div class="vs"><div class="pl'+(w===0?' win':'')+'"><b>'+(w===0?'👑 ':'')+e(a)+'</b><span>'+fmt(as)+'</span></div><div class="mid">VS</div><div class="pl'+(w===1?' win':'')+'"><b>'+(w===1?'👑 ':'')+e(b)+'</b><span>'+fmt(bs)+'</span></div></div>';}
 function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D=G.duel,sc=G.score,time=G.rush.time;store.set('tm_games',store.get('tm_games',0)+1);
+ if(D.online){odFinish(sc,stuck);return;}
  const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';const home=dBtn('🏠 Home','',()=>{DP=null;mode='home';refreshHome();show('home');},'ghost');
  if(DP){DP.scores.push(sc);
   if(DP.scores.length===1){body.innerHTML='<div class="drT">'+(stuck?'No more room!':"Time's up!")+'</div><div class="sub">'+dClean(DP.names[0])+' scored</div><div class="drT" style="font-size:44px">'+fmt(sc)+'</div><div class="sub">📱 Now pass the phone to <b>'+dClean(DP.names[1])+'</b>!<br>Same board, same time. Don\'t peek 🙈</div>';
@@ -2156,6 +2160,70 @@ function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D
   const url=duelLink(D.seed,time,sc,D.me),st=document.createElement('div');st.className='sub';
   btns.append(dBtn('📤 Send result','Challenge them back to beat '+fmt(sc),async()=>{const r=await shareText((win?'🏆 I beat your '+fmt(D.opp)+' with '+fmt(sc)+'!':'I got '+fmt(sc)+'.')+' Can you beat '+fmt(sc)+'?',url);st.textContent=r==='copied'?'✅ Link copied!':'';}),st,dBtn('↻ Try again','',()=>startDuel(D.seed,time,D.me,D.opp,D.oppName)),home);}
  setTimeout(()=>show('duelRes'),300);}
+
+/* ---------- live online duels (needs the website's /api/duel) ---------- */
+const CAN_LIVE=/^https?:$/.test(location.protocol)&&!/claude|anthropic|usercontent/.test(location.hostname);
+let OD=null; // {id,who,name,off,st,timer,round,played,endAt}
+async function odCall(body){const r=await fetch('/api/duel'+(body?'':'?id='+OD.id),body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'});
+ let j={};try{j=await r.json();}catch(e){}if(j.now)OD&&(OD.off=j.now-Date.now());if(!r.ok)throw new Error(j.error||'Connection problem');return j;}
+const odOpp=()=>OD.who==='h'?'g':'h';
+const odOppName=()=>OD.st?(OD.who==='h'?OD.st.meta.g:OD.st.meta.h):'';
+function odStop(){if(OD&&OD.timer){clearInterval(OD.timer);OD.timer=null;}}
+function odLoop(ms){odStop();OD.timer=setInterval(odTick,ms);}
+function odLeave(){odStop();OD=null;mode='home';refreshHome();show('home');}
+async function odTick(){if(!OD||OD.busy)return;OD.busy=true;
+ try{const live=G&&G.mode==='duel'&&G.duel.online&&!G.over;
+  const j=live?await odCall({a:'score',id:OD.id,who:OD.who,score:G.score,round:OD.round}):await odCall();OD.st=j;odUpdate();}
+ catch(e){const el=$('#odStatus');if(el)el.textContent='⚠️ '+e.message+' — retrying…';}
+ OD.busy=false;}
+function odLink(){return location.origin+location.pathname+'?room='+OD.id;}
+function odLobby(){const st=OD.st,m=st.meta,opp=odOppName(),host=OD.who==='h';
+ const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';
+ if(!m.g){body.innerHTML='<div class="drT">🌐 Live Duel</div><div class="sub">Send this link to your friend. When they open it, you’ll both play the <b>same board</b> at the <b>same time</b> — '+mmss(m.time)+'!</div><div class="dLink">'+odLink().replace(/^https?:\/\//,'')+'</div><div class="sub" id="odStatus">⏳ Waiting for your friend to join…</div>';
+  const note=document.createElement('div');note.className='sub';
+  btns.append(dBtn('📤 Send link','WhatsApp, messages…',async()=>{const r=await shareText('⚔️ '+OD.name+' wants to play Mergy Monsters with you, live! Tap to join:',odLink());note.textContent=r==='copied'?'✅ Link copied! Paste it to your friend.':'';}),note,dBtn('✕ Cancel','',odLeave,'ghost'));}
+ else{body.innerHTML='<div class="drT">'+(host?'🎉 '+opp+' joined!':'✅ You joined!')+'</div>'+vsHTML(m.h,0,m.g,0).replace(/<span>0<\/span>/g,'<span>⚔️</span>')+'<div class="sub">Same board · '+mmss(m.time)+' · no undos</div><div class="sub" id="odStatus">'+(host?'Press start when you are both ready!':'⏳ Waiting for '+m.h+' to start…')+'</div>';
+  if(host)btns.append(dBtn('▶ Start!','',async()=>{try{OD.st=await odCall({a:'start',id:OD.id});odUpdate();}catch(e){$('#odStatus').textContent='⚠️ '+e.message;}}));
+  btns.append(dBtn('✕ Leave','',odLeave,'ghost'));}
+ if(mode!=='odLobby'){mode='odLobby';show('duelRes');}}
+function odCountdown(){const m=OD.st.meta,startLocal=m.start-OD.off,left=Math.ceil((startLocal-Date.now())/1000);
+ if(left>0){$('#drBody').innerHTML='<div class="drT">Get ready!</div>'+vsHTML(m.h,0,m.g,0).replace(/<span>0<\/span>/g,'<span>⚔️</span>')+'<div class="drT" style="font-size:80px">'+left+'</div>';$('#drBtns').innerHTML='';
+  if(OD.lastCd!==left){OD.lastCd=left;tone(660,.08,.06,'triangle');haptic(15);}if(mode!=='odLobby'){mode='odLobby';show('duelRes');}
+  clearTimeout(OD.cdT);OD.cdT=setTimeout(odCountdown,Math.max(30,(startLocal-Date.now())%1000||1000));return;}
+ if(OD.played===m.round)return;OD.played=m.round;OD.round=m.round;OD.lastCd=null;tone(990,.12,.08,'triangle');
+ const me=OD.name,opp=odOppName();startDuel(m.seed,m.time,me,0,opp);G.duel.online=true;G.duel.t0=startLocal;G.rush.left=Math.max(0,m.time-(Date.now()-startLocal)/1000);odLoop(1500);}
+function odUpdate(){const st=OD.st,m=st.meta;
+ if(G&&G.mode==='duel'&&G.duel.online&&OD.played===m.round&&!G.over){const o=st[odOpp()];G.duel.opp=o?o.score:0;G.duel.oppName=odOppName();rushHud();return;}
+ if(m.start&&OD.played!==m.round){if(m.start-OD.off>Date.now()-2000||mode==='odLobby'||mode==='odWait'){odCountdown();return;}}
+ if(OD.played===m.round&&G&&G.over){odResult();return;}
+ if(!m.start||OD.played!==m.round)odLobby();}
+async function odFinish(sc){OD.myFinal=sc;try{OD.st=await odCall({a:'score',id:OD.id,who:OD.who,score:sc,done:true,round:OD.round});}catch(e){}
+ OD.endAt=Date.now();odLoop(1000);odResult();}
+function odResult(){const st=OD.st,m=st.meta,me=st[OD.who],o=st[odOpp()],opp=odOppName(),my=OD.myFinal!=null?OD.myFinal:(me?me.score:0);
+ const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';
+ const oppDone=o&&o.done,gaveUp=!oppDone&&Date.now()-OD.endAt>15000;
+ if(!oppDone&&!gaveUp){body.innerHTML='<div class="drT">Time’s up!</div><div class="sub">Your score</div><div class="drT" style="font-size:44px">'+fmt(my)+'</div><div class="sub" id="odStatus">⏳ Waiting for '+opp+' to finish… ('+fmt(o?o.score:0)+' so far)</div>';
+  if(mode!=='odWait'){mode='odWait';show('duelRes');}return;}
+ const os=o?o.score:0,win=my>os,tie=my===os;
+ if(OD.shownRound!==m.round){OD.shownRound=m.round;if(win){confetti();S.unlock();}}
+ const hn=OD.who==='h'?OD.name:opp,gn=OD.who==='h'?opp:OD.name,hs=OD.who==='h'?my:os,gs=OD.who==='h'?os:my;
+ body.innerHTML='<div class="drT">'+(win?'🏆 You win!':tie?'🤝 Tie!':'😅 '+opp+' wins!')+'</div>'+vsHTML(hn,hs,gn,gs)+(gaveUp?'<div class="sub">('+opp+' didn’t finish — maybe they lost connection)</div>':'')+'<div class="sub" id="odStatus">'+(OD.who==='h'?'':'Waiting for '+opp+' to start a rematch…')+'</div>';
+ if(OD.who==='h')btns.append(dBtn('↻ Rematch','New board — starts for both of you',async()=>{try{OD.st=await odCall({a:'rematch',id:OD.id});OD.myFinal=null;odUpdate();}catch(e){$('#odStatus').textContent='⚠️ '+e.message;}}));
+ btns.append(dBtn('🏠 Leave','',odLeave,'ghost'));
+ if(mode!=='odWait'){mode='odWait';show('duelRes');}
+ if(m.round!==OD.played&&m.start){OD.myFinal=null;odCountdown();}}
+async function odCreate(){if(!CAN_LIVE){alert('Live duels work on the Mergy Monsters website. Open the game from your site link to play live!');return;}
+ const name=myName();if(dClean($('#duelMe').value))store.set('tm_name',name);
+ OD={id:'',who:'h',name,off:0};try{const j=await odCall({a:'create',name,time:duelT});OD.id=j.id;OD.st=j;OD.round=1;odLobby();odLoop(1200);}
+ catch(e){OD=null;alert('Could not create the game: '+e.message);}}
+function checkRoomLink(){try{const id=new URLSearchParams(location.search).get('room');if(!id||!/^[a-z0-9]{6}$/.test(id))return;history.replaceState(null,'',location.pathname);
+ if(!CAN_LIVE)return;
+ $('#drBody').innerHTML='<div class="drT">🌐 Live Duel!</div><div class="sub">Your friend invited you to play live — same board, same time, each on your own phone.</div>';
+ const nm=document.createElement('input');nm.className='dIn';nm.maxLength=14;nm.placeholder='Your name';nm.value=store.get('tm_name','')||'';
+ const st=document.createElement('div');st.className='sub';
+ const b=$('#drBtns');b.innerHTML='';b.append(nm,dBtn('⚔️ Join game','',async()=>{const name=dClean(nm.value)||'Player 2';store.set('tm_name',name);
+   OD={id,who:'g',name,off:0};try{OD.st=await odCall({a:'join',id,name});odLobby();odLoop(1200);}catch(e){OD=null;st.textContent='⚠️ '+e.message;}}),st,dBtn('Not now','',()=>{show('home');},'ghost'));
+ setTimeout(()=>show('duelRes'),400);}catch(e){}}
 function checkDuelLink(){try{const q=new URLSearchParams(location.search).get('d');if(!q)return;const m=q.match(/^(\d+)-(\d+)-(\d+)-(.*)$/);if(!m)return;
   const seed=+m[1]>>>0,time=Math.min(600,Math.max(30,+m[2])),opp=+m[3],on=dClean(decodeURIComponent(m[4]))||'Friend';
   history.replaceState(null,'',location.pathname);
@@ -2243,7 +2311,7 @@ newGame('classic',true);
 (function(){const hr=$('#homeRow');if(hr)[2,6,11,9,3].forEach((k,i)=>{const im=document.createElement('img');im.src=fruitURL(k,96);im.style.animationDelay=(i*.15)+'s';hr.append(im);});
  const hl=$('#howLadder');if(hl)FRUITS.forEach((f,i)=>{const im=document.createElement('img');im.src=fruitURL(i,48);hl.append(im);if(i<MAXK){const a=document.createElement('span');a.textContent='›';hl.append(a);}});})();
 document.addEventListener('pointerdown',()=>ai(),{once:true});
-refreshHome();checkDuelLink();
+refreshHome();checkDuelLink();checkRoomLink();
 requestAnimationFrame(t=>{last=t;frame(t);});
 setTimeout(initOnline,0);
 </script>
