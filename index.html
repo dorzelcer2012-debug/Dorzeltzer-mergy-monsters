@@ -316,6 +316,18 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
 .fslot input{width:100%;max-width:100px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.1);color:#fff;font:600 13px Fredoka;text-align:center;padding:5px 4px}
 .fslot .frow{display:flex;gap:4px}.fslot .frow button{border:none;border-radius:10px;padding:5px 8px;font:700 12px Fredoka;cursor:pointer;background:linear-gradient(#5fd0ff,#2f7de0);color:#fff}
 .fslot .frow button.x{background:rgba(255,255,255,.14)}
+.duelCard{background:linear-gradient(135deg,#ff8a8a,#e0408a);color:#4a0a2a;box-shadow:0 6px 0 #a0205a,0 14px 24px rgba(224,64,138,.3),inset 0 2px 0 rgba(255,255,255,.5);margin-top:12px}
+.duelCard:active{box-shadow:0 2px 0 #a0205a}.duelCard .dTx b{color:#4a0a2a}.duelCard .dTx small{color:#6a1a3a}.duelCard .dGo{background:rgba(255,255,255,.45);color:#4a0a2a}
+.dsec{width:100%;text-align:left;font-weight:700;font-size:13px;opacity:.8;margin:6px 0 -2px}
+.dIn{width:100%;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.1);color:#fff;font:600 16px Fredoka;padding:11px 14px;text-align:center}
+#duel .btn small,#drBtns .btn small{display:block;font-size:12px;opacity:.8;font-weight:500;margin-top:2px}
+#duel .btn.alt{background:linear-gradient(#b48cff,#7a4ad0);box-shadow:0 5px 0 #4a2a90}
+.vs{display:flex;align-items:stretch;justify-content:center;gap:10px;width:100%;margin:6px 0}
+.vs .pl{flex:1;border-radius:18px;padding:12px 6px;background:rgba(0,0,0,.25);border:1px solid var(--line);text-align:center}
+.vs .pl.win{border-color:#ffd54a;background:linear-gradient(180deg,rgba(255,213,74,.25),rgba(0,0,0,.2));box-shadow:0 0 18px rgba(255,213,74,.3)}
+.vs .pl b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vs .pl span{display:block;font-size:30px;font-weight:800;font-family:Lilita One,Fredoka}
+.vs .mid{align-self:center;font-size:22px;font-weight:800}
+.drT{font-family:Lilita One,Fredoka;font-size:30px;text-align:center;margin:4px 0}
 </style>
 </head>
 <body>
@@ -353,6 +365,7 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   <button class="btn purple" id="bCont" style="display:none">↻ Continue</button>
   <button class="dayCard" id="bDaily"><span class="dIc">☀️</span><span class="dTx"><b>Daily Challenge</b><small id="dSmall">Same monsters for everyone</small></span><span class="dGo">GO ›</span><span class="ribbon">NEW TODAY</span></button>
   <button class="dayCard rushCard" id="bRush"><span class="dIc rIc">⏱️</span><span class="dTx"><b>Time Challenges</b><small id="rSmall">Beat the clock · 10 levels</small></span><span class="dGo">GO ›</span></button>
+  <button class="dayCard duelCard" id="bDuel"><span class="dIc">⚔️</span><span class="dTx"><b>Duel a Friend</b><small>Who scores more in the time?</small></span><span class="dGo">GO ›</span></button>
   <div class="tiles">
    <button class="tile" id="bRanks"><i>🏆</i>Rankings</button>
    <button class="tile" id="bDex"><i>📖</i>Collection</button>
@@ -379,6 +392,25 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   <div class="sub" style="font-size:13.5px">Add a photo and a name for each level. #1 is the smallest, #12 is the biggest 👑</div>
   <div id="famGrid"></div>
   <button class="btn ghost" id="bFamBack">Done</button>
+ </div></div>
+
+ <div id="duel" class="ov"><div class="sheet">
+  <h2>⚔️ Duel</h2>
+  <div class="sub" style="font-size:13.5px">Same board, same luck, same time.<br>Whoever scores more wins! No undos.</div>
+  <div class="dsec">⏱️ Time</div>
+  <div class="tabs" id="duelTime"><button class="tab" data-d="60">1:00</button><button class="tab on" data-d="120">2:00</button><button class="tab" data-d="180">3:00</button></div>
+  <div class="dsec">👤 Your name</div>
+  <input id="duelMe" class="dIn" maxlength="14" placeholder="Player 1">
+  <button class="btn" id="bDuelLink">🔗 Challenge a friend<small>Play, then send them a link</small></button>
+  <div class="dsec">📱 Same phone</div>
+  <input id="duelP2" class="dIn" maxlength="14" placeholder="Player 2">
+  <button class="btn alt" id="bDuelPass">📱 Pass &amp; Play<small>Take turns on this phone</small></button>
+  <button class="btn ghost" id="bDuelBack">Back</button>
+ </div></div>
+
+ <div id="duelRes" class="ov"><div class="sheet">
+  <div id="drBody"></div>
+  <div id="drBtns"></div>
  </div></div>
 
  <div id="rush" class="ov"><div class="sheet">
@@ -1688,19 +1720,19 @@ function updCoins(){document.querySelectorAll('.coinN').forEach(e=>e.textContent
 function R(){let a=G.rs;a=a+0x6D2B79F5|0;G.rs=a;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}
 function newFruit(){const r=R();const hi=G.top>=6?.2:.12;return{k:r<hi?1:0};}
 function mk(k,r,c){return{id:++uidc,k,r,col:c,x:c,y:r,s:1,bump:0};}
-function newGame(m,demo){const _demo=!!demo;
+function newGame(m,demo,seed){const _demo=!!demo;
  const daily=m==='daily';
- G={mode:m,day:daily?dayKey():'',rs:daily?hashStr('fruit-'+dayKey()):(Math.random()*4294967296)>>>0,grid:Array(N*N).fill(null),ghosts:[],rings:[],score:0,shown:0,moves:0,merges:0,top:0,
+ G={mode:m,day:daily?dayKey():'',rs:seed!=null?seed>>>0:daily?hashStr('fruit-'+dayKey()):(Math.random()*4294967296)>>>0,grid:Array(N*N).fill(null),ghosts:[],rings:[],score:0,shown:0,moves:0,merges:0,top:0,
     undo:3,hist:[],demo:_demo,phase:'idle',timer:0,dir:null,parts:[],floats:[],tilt:{x:0,y:0},shake:0,over:false,beat:false,startBest:bestFor(m)};
  for(let n=0;n<2;n++){let i;do{i=Math.floor(R()*N*N);}while(G.grid[i]);G.grid[i]=mk(newFruit().k,i/N|0,i%N);}
  G.next=newFruit();
  updHud();if(!demo)save();
 }
-function bestFor(m){if(m==='rush')return 0;return m==='daily'?(store.get('ft_daily',{})[dayKey()]||0):store.get('ft_best',0);}
-function setBest(m,v){if(m==='rush')return;if(m==='daily'){const o=store.get('ft_daily',{});o[dayKey()]=Math.max(o[dayKey()]||0,v);const ks=Object.keys(o).sort();while(ks.length>30)delete o[ks.shift()];store.set('ft_daily',o);}else store.set('ft_best',Math.max(store.get('ft_best',0),v));}
+function bestFor(m){if(m==='rush'||m==='duel')return 0;return m==='daily'?(store.get('ft_daily',{})[dayKey()]||0):store.get('ft_best',0);}
+function setBest(m,v){if(m==='rush'||m==='duel')return;if(m==='daily'){const o=store.get('ft_daily',{});o[dayKey()]=Math.max(o[dayKey()]||0,v);const ks=Object.keys(o).sort();while(ks.length>30)delete o[ks.shift()];store.set('ft_daily',o);}else store.set('ft_best',Math.max(store.get('ft_best',0),v));}
 function serial(){return{ce:G.ce||0,grid:G.grid.map(g=>g?g.k:-1),score:G.score,moves:G.moves,merges:G.merges,top:G.top,rs:G.rs,next:G.next};}
 function restore(s){if(s.ce!=null&&G.ce!=null&&!G.demo){addCoins(-(G.ce-s.ce));G.ce=s.ce;}G.grid=s.grid.map((k,i)=>k>=0?mk(k,i/N|0,i%N):null);G.score=s.score;G.shown=s.score;G.moves=s.moves;G.merges=s.merges;G.top=s.top;G.rs=s.rs;G.next=s.next;G.ghosts=[];}
-function save(){if(G&&G.mode==='rush')return;if(!G||G.over){store.del('ft_save');return;}if(G.phase!=='idle')return;store.set('ft_save',Object.assign(serial(),{mode:G.mode,day:G.day,undo:G.undo}));}
+function save(){if(G&&(G.mode==='rush'||G.mode==='duel'))return;if(!G||G.over){store.del('ft_save');return;}if(G.phase!=='idle')return;store.set('ft_save',Object.assign(serial(),{mode:G.mode,day:G.day,undo:G.undo}));}
 function load(){const s=store.get('ft_save',null);if(!s||!Array.isArray(s.grid)||s.grid.length!==N*N)return false;if(s.mode==='daily'&&s.day!==dayKey())return false;
  newGame(s.mode,true);G.demo=false;restore(s);G.rvTop=G.top;G.undo=s.undo|0;G.startBest=bestFor(s.mode);updHud();return true;}
 
@@ -1760,6 +1792,9 @@ function update(dt){
   else{const pl=R2.left;R2.left=Math.max(0,R2.left-dt);if(R2.left<=5&&Math.ceil(pl)!==Math.ceil(R2.left)&&R2.left>0){tone(Math.ceil(R2.left)<=3?1320:990,.06,.05,'triangle');haptic(10);}
    if(R2.left<=0&&G.score<R2.goal)rushEnd(false);}
   rushHud();}
+ if(G.mode==='duel'&&G.rush&&!G.over&&!G.demo&&mode==='play'){const R2=G.rush,pl=R2.left;R2.left=Math.max(0,R2.left-dt);
+  if(R2.left<=5&&Math.ceil(pl)!==Math.ceil(R2.left)&&R2.left>0){tone(Math.ceil(R2.left)<=3?1320:990,.06,.05,'triangle');haptic(10);}
+  if(R2.left<=0&&G.phase==='idle')duelEnd();rushHud();}
  G.tilt.x*=Math.pow(.02,dt);G.tilt.y*=Math.pow(.02,dt);if(G.shake>0)G.shake=Math.max(0,G.shake-dt*40);
  for(const g of G.grid){if(!g)continue;g.x+=(g.col-g.x)*Math.min(1,dt*22);g.y+=(g.r-g.y)*Math.min(1,dt*22);if(g.s<1)g.s=Math.min(1,g.s+dt*5);if(g.bump>0){g.bump+=dt;if(g.bump>.4)g.bump=0;}}
  for(const h of G.ghosts){h.life-=dt;h.x+=(h.tc-h.x)*Math.min(1,dt*22);h.y+=(h.tr-h.y)*Math.min(1,dt*22);}G.ghosts=G.ghosts.filter(h=>h.life>0);
@@ -1777,7 +1812,7 @@ function endTurn(){
 function endTurn2(){
  if(!G.beat&&G.startBest>0&&G.score>G.startBest){G.beat=true;floatT(W/2,by+B*.45,'👑 NEW BEST!','#ffd54a',38,1.6);S.best();}
  updHud();
- if(!canMove()){G.over=true;store.del('ft_save');setTimeout(()=>{S.over();if(G.mode==='rush')rushEnd(false,true);else gameOver();},800);}
+ if(!canMove()){G.over=true;store.del('ft_save');setTimeout(()=>{S.over();if(G.mode==='rush')rushEnd(false,true);else if(G.mode==='duel')duelEnd(true);else gameOver();},800);}
  else{save();const empt=G.grid.filter(g=>!g).length;if(empt<=3)tipMsg('⚠️ Almost no room!');}
 }
 function floatT(x,y,t,c,size,life=1){G.floats.push({x,y,t,c,size,life,max:life});}
@@ -1852,8 +1887,8 @@ function drawNext(){nctx.clearRect(0,0,88,88);if(G&&G.next)drawFruit(nctx,G.next
 function updLadder(){if(G){const d=store.get('tm_disc',0);if(G.top>d&&!G.demo){store.set('tm_disc',G.top);}const g=$('#goalTxt');g.innerHTML='';if(G.top<MAXK){g.append('Next: ');const bb=document.createElement('b');bb.textContent=FRUITS[G.top+1].n;g.append(bb);}else{const bb=document.createElement('b');bb.textContent='👑 MAX LEVEL!';g.append(bb);}}
 const L=$('#ladder');if(!L.children.length)FRUITS.forEach((f,i)=>{const s=document.createElement('span');const im=document.createElement('img');im.src=fruitURL(i,48);im.alt=f.n;s.append(im);L.append(s);});
  [...L.children].forEach((s,i)=>{s.classList.toggle('on',!!G&&i<=G.top);s.classList.toggle('top',!!G&&i===G.top);});}
-function updHud(){if(!G)return;$('#undoN').textContent=G.undo;$('#undoBtn').disabled=G.mode==='rush'||!G.undo||!G.hist.length;$('#best').textContent=fmt(Math.max(bestFor(G.mode),G.score));
- document.body.classList.toggle('rushing',G.mode==='rush');$('#mlabel').textContent=G.mode==='rush'?'TIME CHALLENGE · LV '+(G.rush?G.rush.lv+1:''):G.mode==='daily'?'DAILY · '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase():'CLASSIC';
+function updHud(){if(!G)return;$('#undoN').textContent=G.undo;$('#undoBtn').disabled=G.mode==='rush'||G.mode==='duel'||!G.undo||!G.hist.length;$('#best').textContent=fmt(Math.max(bestFor(G.mode),G.score));
+ document.body.classList.toggle('rushing',G.mode==='rush'||G.mode==='duel');$('#mlabel').textContent=G.mode==='duel'?'⚔️ DUEL · '+(G.duel?G.duel.me:''):G.mode==='rush'?'TIME CHALLENGE · LV '+(G.rush?G.rush.lv+1:''):G.mode==='daily'?'DAILY · '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase():'CLASSIC';
  G.top=Math.max(G.top,...G.grid.filter(Boolean).map(g=>g.k),0);drawNext();updLadder();}
 function tipMsg(t){const e=$('#tip');e.textContent=t||'Swipe to tilt ↑ ↓ ← →';e.classList.toggle('warn',!!t&&/⚠️|Nothing/.test(t));}
 
@@ -1863,7 +1898,7 @@ cvs.addEventListener('pointerdown',e=>{if(mode!=='play')return;ai();sw={x:e.clie
 cvs.addEventListener('pointermove',e=>{if(!sw||sw.done)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y;if(Math.hypot(dx,dy)>28){sw.done=true;tryMove(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'));}});
 cvs.addEventListener('pointerup',()=>{sw=null;if(G&&G.hapPend){G.hapPend=0;if(AS.vib!==false)iosTap();}});cvs.addEventListener('touchend',()=>{if(G&&G.hapPend){G.hapPend=0;if(AS.vib!==false)iosTap();}});cvs.addEventListener('pointercancel',()=>{sw=null;});
 window.addEventListener('keydown',e=>{const m={ArrowLeft:'L',ArrowRight:'R',ArrowUp:'U',ArrowDown:'D',KeyA:'L',KeyD:'R',KeyW:'U',KeyS:'D'}[e.code];if(m){e.preventDefault();tryMove(m);}if(e.code==='KeyZ')doUndo();});
-function doUndo(){if(G&&G.mode==='rush'){tipMsg('No undos in Time Challenges!');S.bump();return;}if(!G||G.phase!=='idle'||!G.undo||!G.hist.length||G.over)return;restore(G.hist.pop());G.undo--;S.undo();updHud();save();tipMsg('Undone! '+G.undo+' undo'+(G.undo===1?'':'s')+' left');}
+function doUndo(){if(G&&(G.mode==='rush'||G.mode==='duel')){tipMsg('No undos in timed games!');S.bump();return;}if(!G||G.phase!=='idle'||!G.undo||!G.hist.length||G.over)return;restore(G.hist.pop());G.undo--;S.undo();updHud();save();tipMsg('Undone! '+G.undo+' undo'+(G.undo===1?'':'s')+' left');}
 $('#undoBtn').onclick=doUndo;
 
 /* ---------- screens ---------- */
@@ -1932,7 +1967,12 @@ function refreshHome(){{const n=rushStars();$('#rSmall').textContent=n?'⭐ '+n+
  $('#dSmall').textContent=d?'Your best today: '+fmt(d)+' · try to beat it!':'Same monsters for everyone';
  const s=store.get('ft_save',null);const ok=s&&Array.isArray(s.grid)&&!(s.mode==='daily'&&s.day!==dayKey());$('#bCont').style.display=ok?'block':'none';
  if(ok)$('#bCont').textContent='↻ Continue '+(s.mode==='daily'?'daily':'classic')+' · '+fmt(s.score);$('#bClassic').innerHTML='<span class="playIc">▶</span> '+(ok?'NEW GAME':'PLAY')+'<small>Classic mode</small>';}
-$('#bDaily').onclick=()=>start('daily');$('#bRush').onclick=()=>{ai();renderRush();show('rush');};$('#bRushBack').onclick=()=>{refreshHome();show('home');};$('#bClassic').onclick=()=>start('classic');
+$('#bDaily').onclick=()=>start('daily');
+document.querySelectorAll('#duelTime .tab').forEach(t=>t.onclick=()=>{duelT=+t.dataset.d;document.querySelectorAll('#duelTime .tab').forEach(x=>x.classList.toggle('on',x===t));});
+$('#bDuel').onclick=()=>{ai();if(!$('#duelMe').value)$('#duelMe').value=store.get('tm_name','')||'';show('duel');};
+$('#bDuelBack').onclick=()=>{refreshHome();show('home');};
+$('#bDuelLink').onclick=()=>{const me=myName();if(dClean($('#duelMe').value))store.set('tm_name',me);DP=null;startDuel((Math.random()*4294967296)>>>0,duelT,me,null);};
+$('#bDuelPass').onclick=()=>{const a=myName(),b=dClean($('#duelP2').value)||'Player 2';DP={seed:(Math.random()*4294967296)>>>0,time:duelT,names:[a,b],scores:[]};startDuel(DP.seed,DP.time,a,null);};$('#bRush').onclick=()=>{ai();renderRush();show('rush');};$('#bRushBack').onclick=()=>{refreshHome();show('home');};$('#bClassic').onclick=()=>start('classic');
 $('#bCont').onclick=()=>{ai();if(load()){mode='play';show(null);}else refreshHome();};
 $('#bAgain').onclick=()=>{if(G&&G.mode==='rush')startRush(G.rush.lv);else start(G?G.mode:'classic');};
 $('#bHow').onclick=()=>show('how');$('#bHelp2').onclick=()=>show('how');
@@ -2062,6 +2102,7 @@ const rushData=()=>store.get('tm_rush',{});
 const rushStars=()=>Object.values(rushData()).reduce((a,b)=>a+b,0);
 const mmss=t=>{t=Math.ceil(t);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
 function rushHud(){if(!G||!G.rush)return;const R2=G.rush;const c=$('#rClock');c.textContent=mmss(R2.left);c.classList.toggle('low',R2.left<=10);
+ if(G.mode==='duel'){const o=G.duel.opp;$('#rFill').style.width=(o!=null?Math.min(100,G.score/Math.max(1,o)*100):(1-R2.left/R2.time)*100)+'%';$('#rGoal').textContent=o!=null?'🆚 '+fmt(o):'⚔️';return;}
  $('#rFill').style.width=Math.min(100,G.score/R2.goal*100)+'%';$('#rGoal').textContent='🎯 '+fmt(R2.goal);}
 function startRush(lv){ai();show(null);newGame('rush');const[goal,time]=RUSH[lv];G.rush={lv,goal,time,left:time};mode='play';updHud();rushHud();
  floatT(W/2,by+B*.45,'Reach '+fmt(goal)+'!','#fff',34,1.6);floatT(W/2,by+B*.58,'⏱️ '+mmss(time),'#ffe066',28,1.6);tipMsg('');}
@@ -2086,6 +2127,42 @@ function rushEnd(win,stuck){if(G.over&&!stuck)return;G.over=true;mode='over';sto
  $('#bAgain').textContent=win?'↻ Try for more ⭐':'↻ Try again';
  const nx=$('#bNextLv');nx.style.display=win&&lv<RUSH.length-1?'block':'none';nx.onclick=()=>startRush(lv+1);
  setTimeout(()=>show('over'),win?500:0);}
+/* ---------- duels ---------- */
+let duelT=120,DP=null; // DP = pass&play session {seed,time,names:[a,b],scores:[]}
+const dClean=t=>String(t||'').replace(/[<>&"]/g,'').trim().slice(0,14);
+function myName(){return dClean($('#duelMe').value)||dClean(store.get('tm_name',''))||'Player 1';}
+function startDuel(seed,time,me,opp,oppName){ai();show(null);newGame('duel',false,seed);G.duel={seed,me,opp,oppName};G.rush={time,left:time,goal:Infinity};mode='play';updHud();rushHud();
+ floatT(W/2,by+B*.45,me,'#fff',32,1.6);floatT(W/2,by+B*.58,opp!=null?'Beat '+fmt(opp)+'!':'⏱️ '+mmss(time),'#ffe066',28,1.6);tipMsg('');}
+function duelLink(seed,time,score,name){const base=/^https?:$/.test(location.protocol)&&!/claude|anthropic|usercontent/.test(location.hostname)?location.origin+location.pathname:'https://dorzeltzer-mergy-monsters.netlify.app/';return base+'?d='+[seed,time,score].join('-')+'-'+encodeURIComponent(name);}
+async function shareText(txt,url){try{if(navigator.share){await navigator.share({text:txt,url});return 'shared';}}catch(e){if(e&&e.name==='AbortError')return '';}
+ try{await navigator.clipboard.writeText(txt+' '+url);return 'copied';}catch(e){prompt('Copy this link:',url);return '';}}
+function dBtn(label,sub,fn,cls){const b=document.createElement('button');b.className='btn'+(cls?' '+cls:'');b.innerHTML=label+(sub?'<small>'+sub+'</small>':'');b.onclick=fn;return b;}
+function vsHTML(a,as,b,bs){const w=as>bs?0:bs>as?1:-1;const e=s=>String(s).replace(/[<>&]/g,'');
+ return '<div class="vs"><div class="pl'+(w===0?' win':'')+'"><b>'+(w===0?'👑 ':'')+e(a)+'</b><span>'+fmt(as)+'</span></div><div class="mid">VS</div><div class="pl'+(w===1?' win':'')+'"><b>'+(w===1?'👑 ':'')+e(b)+'</b><span>'+fmt(bs)+'</span></div></div>';}
+function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D=G.duel,sc=G.score,time=G.rush.time;store.set('tm_games',store.get('tm_games',0)+1);
+ const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';const home=dBtn('🏠 Home','',()=>{DP=null;mode='home';refreshHome();show('home');},'ghost');
+ if(DP){DP.scores.push(sc);
+  if(DP.scores.length===1){body.innerHTML='<div class="drT">'+(stuck?'No more room!':"Time's up!")+'</div><div class="sub">'+dClean(DP.names[0])+' scored</div><div class="drT" style="font-size:44px">'+fmt(sc)+'</div><div class="sub">📱 Now pass the phone to <b>'+dClean(DP.names[1])+'</b>!<br>Same board, same time. Don\'t peek 🙈</div>';
+   btns.append(dBtn('▶ '+dClean(DP.names[1])+', start!','',()=>startDuel(DP.seed,DP.time,DP.names[1],DP.scores[0],DP.names[0])),home);}
+  else{const[a,b]=DP.names,[x,y]=DP.scores;const w=x>y?a:y>x?b:null;if(w)confetti();S.unlock();
+   body.innerHTML='<div class="drT">'+(w?'🏆 '+dClean(w)+' wins!':'🤝 It\'s a tie!')+'</div>'+vsHTML(a,x,b,y);
+   btns.append(dBtn('↻ Rematch','New board, same players',()=>{DP={seed:(Math.random()*4294967296)>>>0,time:DP.time,names:DP.names,scores:[]};startDuel(DP.seed,DP.time,DP.names[0],null);}),home);}
+ }else if(D.opp==null){const url=duelLink(D.seed,time,sc,D.me);
+  body.innerHTML='<div class="drT">'+(stuck?'No more room!':"Time's up!")+'</div><div class="sub">Your score</div><div class="drT" style="font-size:44px">'+fmt(sc)+'</div><div class="sub">Send the challenge! Your friend gets the <b>same board</b> and <b>'+mmss(time)+'</b> to beat you. ⚔️</div>';
+  const st=document.createElement('div');st.className='sub';
+  btns.append(dBtn('📤 Send challenge','WhatsApp, messages…',async()=>{const r=await shareText('⚔️ '+D.me+' scored '+fmt(sc)+' in Mergy Monsters! Can you beat me? Same board, '+mmss(time)+':',url);st.textContent=r==='copied'?'✅ Link copied! Paste it to your friend.':'';}),st,dBtn('↻ Try again','Same board',()=>startDuel(D.seed,time,D.me,null)),home);
+ }else{const win=sc>D.opp,tie=sc===D.opp;if(win)confetti();
+  body.innerHTML='<div class="drT">'+(win?'🏆 You win!':tie?'🤝 Tie!':'😅 '+dClean(D.oppName)+' wins!')+'</div>'+vsHTML(D.me,sc,D.oppName,D.opp);
+  const url=duelLink(D.seed,time,sc,D.me),st=document.createElement('div');st.className='sub';
+  btns.append(dBtn('📤 Send result','Challenge them back to beat '+fmt(sc),async()=>{const r=await shareText((win?'🏆 I beat your '+fmt(D.opp)+' with '+fmt(sc)+'!':'I got '+fmt(sc)+'.')+' Can you beat '+fmt(sc)+'?',url);st.textContent=r==='copied'?'✅ Link copied!':'';}),st,dBtn('↻ Try again','',()=>startDuel(D.seed,time,D.me,D.opp,D.oppName)),home);}
+ setTimeout(()=>show('duelRes'),300);}
+function checkDuelLink(){try{const q=new URLSearchParams(location.search).get('d');if(!q)return;const m=q.match(/^(\d+)-(\d+)-(\d+)-(.*)$/);if(!m)return;
+  const seed=+m[1]>>>0,time=Math.min(600,Math.max(30,+m[2])),opp=+m[3],on=dClean(decodeURIComponent(m[4]))||'Friend';
+  history.replaceState(null,'',location.pathname);
+  $('#drBody').innerHTML='<div class="drT">⚔️ Challenge!</div><div class="sub"><b>'+on+'</b> scored</div><div class="drT" style="font-size:44px">'+fmt(opp)+'</div><div class="sub">on this board in <b>'+mmss(time)+'</b>. Same board, same luck. Can you beat it?</div>';
+  const nm=document.createElement('input');nm.className='dIn';nm.maxLength=14;nm.placeholder='Your name';nm.value=store.get('tm_name','')||'';
+  const b=$('#drBtns');b.innerHTML='';b.append(nm,dBtn('⚔️ Accept challenge','',()=>{const me=dClean(nm.value)||'Me';store.set('tm_name',me);DP=null;startDuel(seed,time,me,opp,on);}),dBtn('Not now','',()=>{show('home');},'ghost'));
+  setTimeout(()=>show('duelRes'),400);}catch(e){}}
 function gameOver(){{const eb=Math.floor(G.score/50);if(eb>0&&!G.demo){G.ce=(G.ce||0)+eb;addCoins(eb);}}$('#oBestL').textContent='BEST';$('#bNextLv').style.display='none';$('#bAgain').textContent='↻ Play again';store.set('tm_games',store.get('tm_games',0)+1);document.querySelectorAll('#over .nameBox').forEach(n=>n.remove());setTimeout(()=>{$('#oCoins').textContent=(G.ce?'🪙 +'+fmt(G.ce)+' coins earned · ':'')+'You have '+fmt(coins)+' 🪙';},0);
  mode='over';const score=G.score,prev=bestFor(G.mode),isBest=score>prev;setBest(G.mode,score);
  $('#oTitle').textContent=G.mode==='daily'?'DAILY RUN COMPLETE':'NO MORE ROOM!';
@@ -2166,7 +2243,7 @@ newGame('classic',true);
 (function(){const hr=$('#homeRow');if(hr)[2,6,11,9,3].forEach((k,i)=>{const im=document.createElement('img');im.src=fruitURL(k,96);im.style.animationDelay=(i*.15)+'s';hr.append(im);});
  const hl=$('#howLadder');if(hl)FRUITS.forEach((f,i)=>{const im=document.createElement('img');im.src=fruitURL(i,48);hl.append(im);if(i<MAXK){const a=document.createElement('span');a.textContent='›';hl.append(a);}});})();
 document.addEventListener('pointerdown',()=>ai(),{once:true});
-refreshHome();
+refreshHome();checkDuelLink();
 requestAnimationFrame(t=>{last=t;frame(t);});
 setTimeout(initOnline,0);
 </script>
