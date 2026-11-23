@@ -1,5 +1,20 @@
 // Mergy Monsters — online duels. Two phones, one room, same board, live scores.
 import { getStore } from "@netlify/blobs";
+// Open the store. Strong consistency needs extra platform support; fall back to the default if it is missing.
+function openStore(name) {
+  try { return getStore({ name, consistency: "strong" }); } catch { return getStore(name); }
+}
+const safe = (fn) => async (req) => {
+  try { return await fn(req.clone(), false); }
+  catch (e) {
+    try { return await fn(req, true); }
+    catch (e2) {
+      return new Response(JSON.stringify({ error: "Server error: " + String(e2 && e2.message || e2).slice(0, 160), now: Date.now() }),
+        { status: 500, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+    }
+  }
+};
+
 
 const json = (o, status = 200) => new Response(JSON.stringify({ ...o, now: Date.now() }), {
   status, headers: { "content-type": "application/json", "cache-control": "no-store" }
@@ -16,8 +31,8 @@ async function state(st, id) {
   return { meta, h: h && h.round === meta.round ? h : null, g: g && g.round === meta.round ? g : null };
 }
 
-export default async (req) => {
-  const st = getStore({ name: "duels", consistency: "strong" });
+const handler = async (req, eventual) => {
+  const st = (eventual ? getStore("duels") : openStore("duels"));
   if (req.method === "GET") {
     const id = new URL(req.url).searchParams.get("id");
     if (!okId(id)) return json({ error: "Bad room" }, 400);
@@ -69,5 +84,7 @@ export default async (req) => {
   }
   return json({ error: "Unknown action" }, 400);
 };
+
+export default safe(handler);
 
 export const config = { path: "/api/duel" };
