@@ -2165,7 +2165,7 @@ function duelEnd(stuck){if(G.over&&!stuck)return;G.over=true;mode='over';const D
 const CAN_LIVE=/^https?:$/.test(location.protocol)&&!/claude|anthropic|usercontent/.test(location.hostname);
 let OD=null; // {id,who,name,off,st,timer,round,played,endAt}
 async function odCall(body){const r=await fetch('/api/duel'+(body?'':'?id='+OD.id),body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'});
- let j={};try{j=await r.json();}catch(e){}if(j.now)OD&&(OD.off=j.now-Date.now());if(!r.ok)throw new Error(j.error||'Connection problem');return j;}
+ let j={};try{j=await r.json();}catch(e){}if(j.now)OD&&(OD.off=j.now-Date.now());if(!r.ok)throw new Error(j.error||('the game server is not responding (error '+r.status+')'));return j;}
 const odOpp=()=>OD.who==='h'?'g':'h';
 const odOppName=()=>OD.st?(OD.who==='h'?OD.st.meta.g:OD.st.meta.h):'';
 function odStop(){if(OD&&OD.timer){clearInterval(OD.timer);OD.timer=null;}}
