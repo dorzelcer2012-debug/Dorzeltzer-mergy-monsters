@@ -342,6 +342,14 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
 .qc.ready{border-color:#ffd54a;background:linear-gradient(90deg,rgba(255,213,74,.18),rgba(0,0,0,.2))}.qc.claimed{opacity:.55}
 .qc .qi{font-size:26px}.qc .qm{flex:1;min-width:0}.qc .qm b{display:block;font-size:14.5px}.qc .qb{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:6px}.qc .qb i{display:block;height:100%;background:linear-gradient(90deg,#6ae86a,#ffd54a);border-radius:99px}
 .qc small{font-size:12px;opacity:.8}.qc .qbtn{border:none;border-radius:12px;padding:8px 10px;font:800 13px Fredoka;background:linear-gradient(#6ae86a,#2fa84a);color:#fff;cursor:pointer;white-space:nowrap}.qc .qr{font:700 13px Fredoka;color:var(--gold);white-space:nowrap}
+.wheelCard{background:linear-gradient(135deg,#ffe066,#ff7ab8 55%,#b06cff);color:#3a0a3a;box-shadow:0 6px 0 #8a3aa8,0 14px 24px rgba(176,108,255,.35),inset 0 2px 0 rgba(255,255,255,.55);margin-bottom:12px}
+.wheelCard:active{box-shadow:0 2px 0 #8a3aa8}.wheelCard .dTx b{color:#3a0a3a}.wheelCard .dTx small{color:#5a1a5a}.wheelCard .dGo{background:rgba(255,255,255,.5);color:#3a0a3a}
+.wheelCard.ready .wIc{animation:spinI 2.4s linear infinite}@keyframes spinI{to{transform:rotate(360deg)}}
+.wheelCard.wait{filter:saturate(.55) brightness(.9)}
+.wWrap{position:relative;width:min(300px,78vw);aspect-ratio:1;margin:6px auto}
+#wCv{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45))}
+.wPin{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:30px solid #fff;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5));z-index:2}
+#wHub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26%;height:26%;border-radius:50%;border:4px solid #fff;background:radial-gradient(circle at 35% 30%,#ffe98a,#ffb020 60%,#d07a00);color:#4a2200;font:800 15px Fredoka;box-shadow:0 4px 12px rgba(0,0,0,.4);cursor:pointer}
 </style>
 </head>
 <body>
@@ -378,6 +386,7 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   </div>
   <button class="btn" id="bClassic"><span class="playIc">▶</span> PLAY<small>Classic mode</small></button>
   <button class="btn purple" id="bCont" style="display:none">↻ Continue</button>
+  <button class="dayCard wheelCard" id="bWheel"><span class="dIc wIc">🎡</span><span class="dTx"><b>Lucky Wheel</b><small id="wSmall">Free spin every 12 hours</small></span><span class="dGo" id="wGo">SPIN ›</span></button>
   <button class="dayCard" id="bDaily"><span class="dIc">☀️</span><span class="dTx"><b>Daily Challenge</b><small id="dSmall">Same monsters for everyone</small></span><span class="dGo">GO ›</span><span class="ribbon">NEW TODAY</span></button>
   <button class="dayCard rushCard" id="bRush"><span class="dIc rIc">⏱️</span><span class="dTx"><b>Time Challenges</b><small id="rSmall">Beat the clock · 10 levels</small></span><span class="dGo">GO ›</span></button>
   <button class="dayCard duelCard" id="bDuel"><span class="dIc">⚔️</span><span class="dTx"><b>Duel a Friend</b><small>Who scores more in the time?</small></span><span class="dGo">GO ›</span></button>
@@ -409,6 +418,15 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
   <div class="sub" style="font-size:13.5px">Add a photo and a name for each level. #1 is the smallest, #12 is the biggest 👑</div>
   <div id="famGrid"></div>
   <button class="btn ghost" id="bFamBack">Done</button>
+ </div></div>
+
+ <div id="wheel" class="ov"><div class="sheet">
+  <h2>🎡 Lucky Wheel</h2>
+  <div class="sub" style="font-size:13.5px">A free spin every 12 hours. Every prize is a win!</div>
+  <div class="wWrap"><canvas id="wCv" width="600" height="600"></canvas><div class="wPin"></div><button id="wHub">SPIN</button></div>
+  <div class="drT" id="wRes" style="min-height:44px"></div>
+  <button class="btn" id="bSpin">🎡 Spin!</button>
+  <button class="btn ghost" id="bWBack">Back</button>
  </div></div>
 
  <div id="quests" class="ov"><div class="sheet">
@@ -1998,12 +2016,16 @@ $('#bGiftOk').onclick=()=>{refreshHome();show('home');};
 
 function yKey(){const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function greetTxt(){const h=new Date().getHours(),who=curSet==='monsters'?'Monster Tamer':'Champ';return h<5?'Up late, '+who+'? 🌙':h<12?'Good morning, '+who+'! ☀️':h<17?'Good afternoon, '+who+'! 🌤️':h<21?'Good evening, '+who+'! 🌆':'Good night, '+who+'! 🌙';}
-function refreshHome(){{const n=rushStars();$('#rSmall').textContent=n?'⭐ '+n+' / '+RUSH.length*3+' stars · beat the clock':'Beat the clock · 10 levels';}$('#greet').textContent=greetTxt();buildScene();buildLogo();updGift();buildCrew();const b=store.get('ft_best',0),d=bestFor('daily');{const hc=$('#hChips');hc.innerHTML='';const add=(l,v)=>{const s=document.createElement('span');s.className='chip';s.append(l+' ');const bb=document.createElement('b');bb.textContent=v;s.append(bb);hc.append(s);};if(b)add('👑 Best',fmt(b));add('🪙','');hc.lastChild.querySelector('b').className='coinN';updCoins();{const sb=document.createElement('button');sb.className='chip setChip';sb.textContent=SETS[curSet].e+' '+SETS[curSet].name+' ›';sb.onclick=()=>{ai();renderShop();show('shop');};hc.append(sb);}if(d)add('☀️ Today',fmt(d));}
+function refreshHome(){if(typeof wheelHome==="function")wheelHome();{const n=rushStars();$('#rSmall').textContent=n?'⭐ '+n+' / '+RUSH.length*3+' stars · beat the clock':'Beat the clock · 10 levels';}$('#greet').textContent=greetTxt();buildScene();buildLogo();updGift();buildCrew();const b=store.get('ft_best',0),d=bestFor('daily');{const hc=$('#hChips');hc.innerHTML='';const add=(l,v)=>{const s=document.createElement('span');s.className='chip';s.append(l+' ');const bb=document.createElement('b');bb.textContent=v;s.append(bb);hc.append(s);};if(b)add('👑 Best',fmt(b));add('🪙','');hc.lastChild.querySelector('b').className='coinN';updCoins();{const sb=document.createElement('button');sb.className='chip setChip';sb.textContent=SETS[curSet].e+' '+SETS[curSet].name+' ›';sb.onclick=()=>{ai();renderShop();show('shop');};hc.append(sb);}if(d)add('☀️ Today',fmt(d));}
  
  $('#dSmall').textContent=d?'Your best today: '+fmt(d)+' · try to beat it!':'Same monsters for everyone';
  const s=store.get('ft_save',null);const ok=s&&Array.isArray(s.grid)&&(s.moves>0||s.score>0)&&!(s.mode==='daily'&&s.day!==dayKey());$('#bCont').style.display=ok?'block':'none';
  if(ok)$('#bCont').textContent='↻ Continue '+(s.mode==='daily'?'daily':'classic')+' · '+fmt(s.score);$('#bClassic').innerHTML='<span class="playIc">▶</span> '+(ok?'NEW GAME':'PLAY')+'<small>Classic mode</small>';}
 $('#bDaily').onclick=()=>start('daily');
+$('#bWheel').onclick=()=>{ai();$('#wRes').textContent='';wheelSheet();show('wheel');};
+$('#bSpin').onclick=()=>{ai();spinWheel();};$('#wHub').onclick=()=>{ai();spinWheel();};
+$('#bWBack').onclick=()=>{if(wBusy)return;refreshHome();show('home');};
+setInterval(()=>{if(mode==='home')wheelHome();},30000);
 $('#hamBtn').onclick=()=>{ai();hamToggle();};
 $('#bQuests').onclick=()=>{ai();renderQuests();show('quests');};$('#bQBack').onclick=()=>{qBadge();refreshHome();show('home');};
 $('#bInvite').onclick=()=>{ai();const c=shareCard('A cute monster merging game!',Math.max(store.get('ft_best',0),0),Math.max(0,store.get('tm_disc',0)));$('#invImg').src=c.toDataURL('image/jpeg',.85);$('#invSt').textContent='';show('invite');};
@@ -2173,6 +2195,33 @@ function rushEnd(win,stuck){if(G.over&&!stuck)return;G.over=true;mode='over';sto
 
 /* ---------- site link (for sharing) ---------- */
 const SITE=(/^https?:$/.test(location.protocol)&&!/claude|anthropic|usercontent/.test(location.hostname))?location.origin+'/':'https://dorzeltzer-mergy-monsters.netlify.app/';
+
+/* ---------- lucky wheel (free spin every 12 h) ---------- */
+const WHEEL=[{t:'200 🪙',c:200,w:30,col:'#ff7ab8'},{t:'🔨 ×2',h:2,w:10,col:'#6ab8f0'},{t:'400 🪙',c:400,w:25,col:'#ffd23f'},{t:'750 🪙',c:750,w:10,col:'#9ef08a'},
+ {t:'500 🪙',c:500,w:15,col:'#b47cff'},{t:'🔨 ×5',h:5,w:4,col:'#ff9f6b'},{t:'1500 🪙',c:1500,w:5,col:'#6be3d6'},{t:'5000 🪙',c:5000,w:1,col:'#ffffff'}];
+const WHEEL_MS=12*3600*1000;let wAng=0,wBusy=false;
+const wheelLeft=()=>Math.max(0,store.get('tm_wheel',0)+WHEEL_MS-Date.now());
+const hhmm=ms=>{const m=Math.ceil(ms/60000);return Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';};
+function drawWheel(){const c=$('#wCv');if(!c)return;const x=c.getContext('2d'),R=300,n=WHEEL.length,seg=Math.PI*2/n;x.clearRect(0,0,600,600);x.save();x.translate(300,300);x.rotate(wAng);
+ for(let i=0;i<n;i++){const a0=-Math.PI/2+i*seg-seg/2;x.beginPath();x.moveTo(0,0);x.arc(0,0,R-8,a0,a0+seg);x.closePath();x.fillStyle=WHEEL[i].col;x.fill();x.lineWidth=4;x.strokeStyle='rgba(255,255,255,.9)';x.stroke();
+  x.save();x.rotate(a0+seg/2);x.textAlign='right';x.textBaseline='middle';x.fillStyle=WHEEL[i].c===5000?'#d07a00':'#2a1450';x.font='800 32px Fredoka, sans-serif';x.fillText(WHEEL[i].t,R-34,0);x.restore();}
+ x.beginPath();x.arc(0,0,R-6,0,Math.PI*2);x.lineWidth=12;x.strokeStyle='#3a1f9a';x.stroke();
+ for(let i=0;i<n*2;i++){const a=i*seg/2;x.beginPath();x.arc(Math.cos(a)*(R-6),Math.sin(a)*(R-6),6,0,Math.PI*2);x.fillStyle=i%2?'#ffd23f':'#fff';x.fill();}
+ x.restore();}
+function wheelHome(){const b=$('#bWheel');if(!b)return;const l=wheelLeft();b.classList.toggle('ready',!l);b.classList.toggle('wait',!!l);
+ $('#wSmall').textContent=l?'Next free spin in '+hhmm(l):'Your free spin is ready! 🎁';$('#wGo').textContent=l?'⏳':'SPIN ›';}
+function wheelSheet(){const l=wheelLeft();$('#bSpin').disabled=!!l||wBusy;$('#bSpin').textContent=l?'⏳ Next spin in '+hhmm(l):'🎡 Spin!';$('#bSpin').style.opacity=l?.55:1;drawWheel();}
+function spinWheel(){if(wBusy||wheelLeft())return;wBusy=true;store.set('tm_wheel',Date.now());$('#wRes').textContent='';
+ let tot=WHEEL.reduce((a,p)=>a+p.w,0),r=Math.random()*tot,k=0;for(;k<WHEEL.length;k++){r-=WHEEL[k].w;if(r<0)break;}k=Math.min(k,WHEEL.length-1);
+ const n=WHEEL.length,seg=Math.PI*2/n,from=wAng,base=from-(from%(Math.PI*2)),target=base+Math.PI*2*6-k*seg+(Math.random()-.5)*seg*.6,dur=4200,t0=performance.now();let lastTick=-1;
+ wheelSheet();
+ const step=t=>{const u=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-u,4);wAng=from+(target-from)*e;drawWheel();
+  const tick=Math.floor((wAng+seg/2)/seg);if(tick!==lastTick){lastTick=tick;tone(1200,.02,.04,'square');if(u<.85)haptic(4);}
+  if(u<1)requestAnimationFrame(step);else{const P=WHEEL[k];wBusy=false;
+   if(P.c){addCoins(P.c);coinSfx&&coinSfx();}if(P.h)store.set('tm_ham',hamN()+P.h);
+   $('#wRes').textContent='🎉 You won '+P.t+'!';confetti();S.unlock();haptic([30,40,60]);wheelSheet();wheelHome();}};
+ requestAnimationFrame(step);}
+
 /* ---------- daily quests ---------- */
 const QPOOL=[
  {t:'merge',i:'🔗',n:g=>'Make '+g+' merges',g:[40,80,150],r:[60,100,160]},
@@ -2283,7 +2332,7 @@ function checkDuelQuit(){const L=store.get('tm_duelLive',null);if(!L)return;stor
  $('#drBody').innerHTML='<div class="drT">🏃 You left a live duel</div><div class="sub">The game was closed in the middle of a duel, so it counts as a loss.</div><div class="drT" style="font-size:40px;color:#ff8a8a">−'+fmt(pen)+' 🪙</div>';
  const b=$('#drBtns');b.innerHTML='';b.append(dBtn('OK','',()=>{refreshHome();show('home');},'ghost'));setTimeout(()=>show('duelRes'),500);}
 let odHidAt=0;document.addEventListener('visibilitychange',()=>{if(!odLive())return;if(document.hidden)odHidAt=Date.now();else if(odHidAt&&Date.now()-odHidAt>15000){odHidAt=0;odForfeit('You left the app for too long during a live duel, so it counts as a loss.');}else odHidAt=0;});
-async function odTick(){if(!OD||OD.busy)return;OD.busy=true;
+async function odTick(){if(!OD||OD.busy||document.hidden)return;OD.busy=true;
  try{const live=G&&G.mode==='duel'&&G.duel.online&&!G.over;
   const j=live?await odCall({a:'score',id:OD.id,who:OD.who,score:G.score,round:OD.round}):await odCall();OD.st=j;odUpdate();}
  catch(e){const el=$('#odStatus');if(el)el.textContent='⚠️ '+e.message+' — retrying…';}
@@ -2303,7 +2352,7 @@ function odCountdown(){const m=OD.st.meta,startLocal=m.start-OD.off,left=Math.ce
   if(OD.lastCd!==left){OD.lastCd=left;tone(660,.08,.06,'triangle');haptic(15);}if(mode!=='odLobby'){mode='odLobby';show('duelRes');}
   clearTimeout(OD.cdT);OD.cdT=setTimeout(odCountdown,Math.max(30,(startLocal-Date.now())%1000||1000));return;}
  if(OD.played===m.round)return;OD.played=m.round;OD.round=m.round;OD.lastCd=null;tone(990,.12,.08,'triangle');
- const me=OD.name,opp=odOppName();startDuel(m.seed,m.time,me,0,opp);G.duel.online=true;store.set('tm_duelLive',{id:OD.id,who:OD.who,round:m.round,score:0,t:Date.now()});G.duel.t0=startLocal;G.rush.left=Math.max(0,m.time-(Date.now()-startLocal)/1000);odLoop(1500);}
+ const me=OD.name,opp=odOppName();startDuel(m.seed,m.time,me,0,opp);G.duel.online=true;store.set('tm_duelLive',{id:OD.id,who:OD.who,round:m.round,score:0,t:Date.now()});G.duel.t0=startLocal;G.rush.left=Math.max(0,m.time-(Date.now()-startLocal)/1000);odLoop(2500);}
 function odUpdate(){const st=OD.st,m=st.meta;
  if(G&&G.mode==='duel'&&G.duel.online&&OD.played===m.round&&!G.over){const o=st[odOpp()];G.duel.opp=o?o.score:0;G.duel.oppName=odOppName();
   {const L=store.get('tm_duelLive',null);if(L){L.score=G.score;store.set('tm_duelLive',L);}}
@@ -2314,7 +2363,7 @@ function odUpdate(){const st=OD.st,m=st.meta;
  if(OD.played===m.round&&G&&G.over){odResult();return;}
  if(!m.start||OD.played!==m.round)odLobby();}
 async function odFinish(sc){OD.myFinal=sc;store.del('tm_duelLive');try{OD.st=await odCall({a:'score',id:OD.id,who:OD.who,score:sc,done:true,round:OD.round});}catch(e){}
- OD.endAt=Date.now();odLoop(1000);odResult();}
+ OD.endAt=Date.now();odLoop(2000);odResult();}
 function odResult(){const st=OD.st,m=st.meta,me=st[OD.who],o=st[odOpp()],opp=odOppName(),my=OD.myFinal!=null?OD.myFinal:(me?me.score:0);
  const body=$('#drBody'),btns=$('#drBtns');btns.innerHTML='';
  const oppDone=o&&o.done,gaveUp=!oppDone&&Date.now()-OD.endAt>15000;
@@ -2330,7 +2379,7 @@ function odResult(){const st=OD.st,m=st.meta,me=st[OD.who],o=st[odOpp()],opp=odO
  if(m.round!==OD.played&&m.start){OD.myFinal=null;odCountdown();}}
 async function odCreate(){if(!CAN_LIVE){alert('Live duels work on the Mergy Monsters website. Open the game from your site link to play live!');return;}
  const name=myName();if(dClean($('#duelMe').value))store.set('tm_name',name);
- OD={id:'',who:'h',name,off:0};try{const j=await odCall({a:'create',name,time:duelT});OD.id=j.id;OD.st=j;OD.round=1;odLobby();odLoop(1200);}
+ OD={id:'',who:'h',name,off:0};try{const j=await odCall({a:'create',name,time:duelT});OD.id=j.id;OD.st=j;OD.round=1;odLobby();odLoop(2500);}
  catch(e){OD=null;alert('Could not create the game: '+e.message);}}
 function checkRoomLink(){try{const id=new URLSearchParams(location.search).get('room');if(!id||!/^[a-z0-9]{6}$/.test(id))return;history.replaceState(null,'',location.pathname);
  if(!CAN_LIVE)return;
@@ -2338,7 +2387,7 @@ function checkRoomLink(){try{const id=new URLSearchParams(location.search).get('
  const nm=document.createElement('input');nm.className='dIn';nm.maxLength=14;nm.placeholder='Your name';nm.value=store.get('tm_name','')||'';
  const st=document.createElement('div');st.className='sub';
  const b=$('#drBtns');b.innerHTML='';b.append(nm,dBtn('⚔️ Join game','',async()=>{const name=dClean(nm.value)||'Player 2';store.set('tm_name',name);
-   OD={id,who:'g',name,off:0};try{OD.st=await odCall({a:'join',id,name});odLobby();odLoop(1200);}catch(e){OD=null;st.textContent='⚠️ '+e.message;}}),st,dBtn('Not now','',()=>{show('home');},'ghost'));
+   OD={id,who:'g',name,off:0};try{OD.st=await odCall({a:'join',id,name});odLobby();odLoop(2500);}catch(e){OD=null;st.textContent='⚠️ '+e.message;}}),st,dBtn('Not now','',()=>{show('home');},'ghost'));
  setTimeout(()=>show('duelRes'),400);}catch(e){}}
 function checkDuelLink(){try{const q=new URLSearchParams(location.search).get('d');if(!q)return;const m=q.match(/^(\d+)-(\d+)-(\d+)-(.*)$/);if(!m)return;
   const seed=+m[1]>>>0,time=Math.min(600,Math.max(30,+m[2])),opp=+m[3],on=dClean(decodeURIComponent(m[4]))||'Friend';
@@ -2401,12 +2450,13 @@ const myNick=()=>store.get('tm_name','')||(NET?autoNick():'');
 function applyNetRows(list){rows=[];if(!Array.isArray(list))return;for(const v of list){if(!v||typeof v.id!=='string')continue;const b=Number(v.best),t=Number(v.dayBest),tp=Number(v.top);
  rows.push({id:v.id,best:isFinite(b)&&b>=0&&b<1e9?Math.floor(b):0,day:typeof v.day==='string'?v.day.slice(0,10):'',dayBest:isFinite(t)&&t>=0&&t<1e9?Math.floor(t):0,top:isFinite(tp)?Math.max(0,Math.min(MAXK,Math.floor(tp))):0,games:Math.max(0,Math.floor(Number(v.games)||0))});
  names[v.id]=String(v.name||'Player').slice(0,16);}}
-async function netLoad(){try{const r=await apiFetch('leaderboard');if(!r.ok)throw 0;const j=await r.json();applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});rStatus=store.get('tm_lbq',null)?'⏳ Your latest score will upload soon':'';}
+async function netLoad(){try{const r=await apiFetch('leaderboard','',{cache:'default'});if(!r.ok)throw 0;const j=await r.json();applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});rStatus=store.get('tm_lbq',null)?'⏳ Your latest score will upload soon':'';}
  catch(e){const c=store.get('tm_lbcache',null);if(c){applyNetRows(c.players);rStatus='📴 Offline: showing the table from '+new Date(c.t).toLocaleString();}else rStatus='📴 You’re offline. The table will load when you’re back online.';}
  loaded=true;if($('#ranks').classList.contains('on'))renderRanks();}
 function localBody(){return{best:store.get('ft_best',0),day:dayKey(),dayBest:bestFor('daily'),top:Math.max(0,store.get('tm_disc',0)),games:store.get('tm_games',0)};}
 async function netFlush(){const body=store.get('tm_lbq',null);if(!body||!myNick())return false;
- try{const r=await apiFetch('leaderboard','',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({},body,{id:pid(),name:myNick()}))});if(!r.ok)throw 0;const j=await r.json();store.del('tm_lbq');applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});return true;}catch(e){return false;}}
+ const sig=JSON.stringify([body.best,body.dayBest,body.day,body.top,body.games,myNick()]);if(store.get('tm_lbsent','')===sig){store.del('tm_lbq');return true;}
+ try{const r=await apiFetch('leaderboard','',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({},body,{id:pid(),name:myNick()}))});if(!r.ok)throw 0;const j=await r.json();store.del('tm_lbq');store.set('tm_lbsent',sig);applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});return true;}catch(e){return false;}}
 window.addEventListener('online',()=>{if(NET)netFlush().then(netLoad);});
 function nameBox(after){const w=document.createElement('div');w.className='nameBox';const t=document.createElement('div');t.className='sub';t.style.fontSize='14px';t.textContent=store.get('tm_name','')?'Your name on the table:':'Want your own name on the table?';
  const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;width:100%';const i=document.createElement('input');i.maxLength=16;i.placeholder='Your name';i.value=store.get('tm_name','');i.className='nameIn';
@@ -2414,7 +2464,7 @@ function nameBox(after){const w=document.createElement('div');w.className='nameB
  row.append(i,b);w.append(t,row);return w;}
 async function initOnline(){try{
  if(!window.claude||typeof window.claude.use!=='function'){
-  if(/^https?:$/.test(location.protocol)){NET=true;online=true;myId=pid();canPost=true;if(store.get('ft_best',0)>0||store.get('tm_games',0)>0)store.set('tm_lbq',localBody());await netFlush();netLoad();setInterval(()=>{if(NET&&navigator.onLine&&$('#ranks').classList.contains('on'))netLoad();},30000);}
+  if(/^https?:$/.test(location.protocol)){NET=true;online=true;myId=pid();canPost=true;if(store.get('ft_best',0)>0||store.get('tm_games',0)>0)store.set('tm_lbq',localBody());await netFlush();{const c=store.get('tm_lbcache',null);if(!c||Date.now()-c.t>600000)netLoad();else{applyNetRows(c.players);loaded=true;}}setInterval(()=>{if(NET&&navigator.onLine&&$('#ranks').classList.contains('on'))netLoad();},30000);}
   return;}
  const[db,user]=await Promise.all([window.claude.use('db'),window.claude.use('user')]);
  if(!db||!user){rStatus='Sign in to join the world rankings.';return;}
@@ -2438,7 +2488,7 @@ newGame('classic',true);
 document.addEventListener('pointerdown',()=>ai(),{once:true});
 (function(){try{const ref=new URLSearchParams(location.search).get('ref');if(ref&&/^[a-z0-9]{6,40}$/i.test(ref)&&ref!==pid()&&!store.get('tm_refGift',0)&&!store.get('tm_games',0)){store.set('tm_refGift',1);addCoins(200);setTimeout(()=>{$('#drBody').innerHTML='<div class="drT">🎁 Welcome!</div><div class="sub">A friend invited you to Mergy Monsters.<br>Here is a welcome gift:</div><div class="drT" style="font-size:46px;color:#ffd54a">+200 🪙</div>';const b=$('#drBtns');b.innerHTML='';b.append(dBtn('▶ Let’s play!','',()=>{refreshHome();show('home');}));show('duelRes');confetti();},600);}
  if(ref)history.replaceState(null,'',location.pathname+location.search.replace(/[?&]ref=[^&]*/,'').replace(/^&/,'?'));}catch(e){}})();
-refreshHome();qBadge();checkDuelQuit();checkDuelLink();checkRoomLink();
+refreshHome();qBadge();wheelHome();checkDuelQuit();checkDuelLink();checkRoomLink();
 requestAnimationFrame(t=>{last=t;frame(t);});
 setTimeout(initOnline,0);
 </script>
