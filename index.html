@@ -350,6 +350,7 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
 #wCv{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45))}
 .wPin{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:30px solid #fff;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5));z-index:2}
 #wHub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:26%;height:26%;border-radius:50%;border:4px solid #fff;background:radial-gradient(circle at 35% 30%,#ffe98a,#ffb020 60%,#d07a00);color:#4a2200;font:800 15px Fredoka;box-shadow:0 4px 12px rgba(0,0,0,.4);cursor:pointer}
+.lr.creator{background:linear-gradient(90deg,rgba(255,213,74,.35),rgba(255,122,184,.25));border:1px solid rgba(255,213,74,.7);box-shadow:0 0 16px rgba(255,213,74,.3)}
 </style>
 </head>
 <body>
@@ -1819,7 +1820,7 @@ function tryMove(dir){
  if(merged.length){
   let pts=0;merged.forEach(g=>pts+=val(g.k));
   const combo=merged.length;if(combo>=2)pts=Math.round(pts*(1+.25*(combo-1)));
-  G.score+=pts;G.merges+=combo;qBump('merge',combo);qBump('tier',Math.max(...merged.map(g=>g.k)),true);
+  if(DEV)pts*=5;G.score+=pts;G.merges+=combo;qBump('merge',combo);qBump('tier',Math.max(...merged.map(g=>g.k)),true);
   const cg=merged.reduce((a,g)=>a+(g.k+1),0)+(combo>=2?combo*3:0);G.ce=(G.ce||0)+cg;addCoins(cg);
   {const top=Math.max(...merged.map(g=>g.k));if(IOS)G.hapPend=1;else haptic(combo>=2?[25+top*3,40,25+top*3,40,35+top*3]:18+top*4);}
   setTimeout(()=>{if(!G)return;
@@ -2430,6 +2431,7 @@ function rowEl(i,name,sub,val,me){const d=document.createElement('div');d.classN
 function renderRanks(){const L=$('#rList');L.innerHTML='';if(NET){const nb=$('#ranks .nameBox');if(nb)nb.remove();if(!myNick()||$('#ranks').dataset.edit){$('#rList').before(nameBox(()=>{delete $('#ranks').dataset.edit;renderRanks();}));}}
  if(!online){L.append(rowEl(0,'You','Today’s daily best',fmt(bestFor('daily')),true));L.append(rowEl(1,'You','Classic best',fmt(store.get('ft_best',0)),true));$('#rStatus').textContent=rStatus||'World rankings aren’t available here.';return;}
  const list=rankTab==='daily'?dailyList():rows.filter(r=>r.best>0).sort((a,b)=>b.best-a.best);
+ {const c=rowEl(0,'Dor','Creator of Mergy Monsters','👑',false);c.classList.add('creator');c.firstChild.textContent='👑';L.append(c);}
  if(!list.length){const e=document.createElement('div');e.className='sub';e.textContent=loaded?'No scores yet. Be the first!':'Loading…';L.append(e);}
  list.slice(0,100).forEach((r,i)=>L.append(rowEl(i,nameOf(r.id),'Best monster '+FRUITS[r.top].e,fmt(rankTab==='daily'?r.dayBest:r.best),r.id===myId)));
  $('#rStatus').textContent=!canPost?'You can view rankings. Ask the owner for Contributor access to compete.':rStatus;}
@@ -2464,7 +2466,7 @@ async function netLoad(){try{const r=await apiFetch('leaderboard','',{cache:'def
  catch(e){const c=store.get('tm_lbcache',null);if(c){applyNetRows(c.players);rStatus='📴 Offline: showing the table from '+new Date(c.t).toLocaleString();}else rStatus='📴 You’re offline. The table will load when you’re back online.';}
  loaded=true;if($('#ranks').classList.contains('on'))renderRanks();}
 function localBody(){return{best:store.get('ft_best',0),day:dayKey(),dayBest:bestFor('daily'),top:Math.max(0,store.get('tm_disc',0)),games:store.get('tm_games',0)};}
-async function netFlush(){const body=store.get('tm_lbq',null);if(!body||!myNick())return false;
+async function netFlush(){if(DEV){store.del('tm_lbq');return false;}const body=store.get('tm_lbq',null);if(!body||!myNick())return false;
  const sig=JSON.stringify([body.best,body.dayBest,body.day,body.top,body.games,myNick()]);if(store.get('tm_lbsent','')===sig){store.del('tm_lbq');return true;}
  try{const r=await apiFetch('leaderboard','',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({},body,{id:pid(),name:myNick()}))});if(!r.ok)throw 0;const j=await r.json();store.del('tm_lbq');store.set('tm_lbsent',sig);applyNetRows(j.players);store.set('tm_lbcache',{t:Date.now(),players:j.players||[]});return true;}catch(e){return false;}}
 window.addEventListener('online',()=>{if(NET)netFlush().then(netLoad);});
