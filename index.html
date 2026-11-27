@@ -2236,7 +2236,7 @@ function devApply(){if(!DEV)return;owned=Object.keys(SETS);store.set('tm_owned',
 // secret: tap the big logo 7 times quickly, then type the code
 (function(){let n=0,t=0;$('#logo').addEventListener('click',()=>{const now=Date.now();n=now-t<700?n+1:1;t=now;if(n<7)return;n=0;
  if(DEV){if(confirm('Creator mode is ON on this phone. Turn it off?')){store.del('tm_dev');location.reload();}return;}
- const c=prompt('Creator code:');if(c&&c.trim().toLowerCase()==='dor2012'){store.set('tm_dev',1);alert('👑 Creator mode ON — only on this phone.');location.reload();}});})();
+ const c=prompt('Creator code:');if(!c)return;crypto.subtle.digest('SHA-256',new TextEncoder().encode(c.trim().toLowerCase())).then(b=>{const x=[...new Uint8Array(b)].map(v=>v.toString(16).padStart(2,'0')).join('');if(x==='83cae8310c0952c32a76cf036a9ea1e2cbca8755b2dd0cb6a0afba83fe1548c6'){store.set('tm_dev',1);alert('👑 Creator mode ON — only on this phone.');location.reload();}else alert('Wrong code');});});})();
 
 /* ---------- daily quests ---------- */
 const QPOOL=[
