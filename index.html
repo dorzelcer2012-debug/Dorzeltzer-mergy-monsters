@@ -354,6 +354,7 @@ body.rushing #rushRow{display:flex}body.rushing #bestRow{display:none}
 #streakChip{position:absolute;top:10px;right:12px;z-index:3;background:linear-gradient(#ffb03a,#ff5a1f);color:#fff;font:800 15px Fredoka;padding:5px 11px;border-radius:99px;box-shadow:0 4px 12px rgba(255,90,31,.45)}
 .btn.pulse{animation:pulseB 1s ease-in-out infinite alternate}@keyframes pulseB{to{transform:scale(1.04);box-shadow:0 0 24px rgba(255,213,74,.6)}}
 .champ{width:100%;text-align:center;padding:10px;margin:6px 0;border-radius:14px;font-weight:700;font-size:15px;background:linear-gradient(90deg,rgba(255,213,74,.22),rgba(106,232,106,.18));border:1px dashed rgba(255,213,74,.6)}
+.meBar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;padding:6px 4px}.meBar b{color:#ffd54a}.meBar button{border:none;border-radius:12px;padding:7px 11px;font:700 13px Fredoka;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
 </style>
 </head>
 <body>
@@ -2436,7 +2437,8 @@ function validRow(d){const v=d.data();if(!v)return null;const b=Number(v.best),t
 function dailyList(){const k=dayKey();return rows.filter(r=>r.day===k&&r.dayBest>0).sort((a,b)=>b.dayBest-a.dayBest);}
 function rowEl(i,name,sub,val,me){const d=document.createElement('div');d.className='lr'+(me?' me':'');const a=document.createElement('div');a.textContent=i<3?['🥇','🥈','🥉'][i]:'#'+(i+1);a.style.fontSize='18px';
  const n=document.createElement('div');n.className='n';n.textContent=name;const s=document.createElement('small');s.textContent=sub;n.append(s);const v=document.createElement('div');v.className='v';v.textContent=val;d.append(a,n,v);return d;}
-function renderRanks(){const L=$('#rList');L.innerHTML='';if(NET){const nb=$('#ranks .nameBox');if(nb)nb.remove();if(!myNick()||$('#ranks').dataset.edit){$('#rList').before(nameBox(()=>{delete $('#ranks').dataset.edit;renderRanks();}));}}
+function renderRanks(){const L=$('#rList');L.innerHTML='';if(NET){const nb=$('#ranks .nameBox');if(nb)nb.remove();{const ob=$('#ranks .meBar');if(ob)ob.remove();}if(!myNick()||$('#ranks').dataset.edit){$('#rList').before(nameBox(()=>{delete $('#ranks').dataset.edit;renderRanks();}));}
+ else{const m=document.createElement('div');m.className='meBar';m.innerHTML='👤 You appear as <b></b>';m.querySelector('b').textContent=myNick();const e=document.createElement('button');e.textContent='✏️ Change name';e.onclick=()=>{$('#ranks').dataset.edit=1;renderRanks();setTimeout(()=>{const i=$('#ranks .nameIn');if(i){i.focus();i.select();}},50);};m.append(e);$('#rList').before(m);}}
  if(!online){L.append(rowEl(0,'You','Today’s daily best',fmt(bestFor('daily')),true));L.append(rowEl(1,'You','Classic best',fmt(store.get('ft_best',0)),true));$('#rStatus').textContent=rStatus||'World rankings aren’t available here.';return;}
  const wk=weekKey(),list=rankTab==='daily'?dailyList():rankTab==='week'?rows.filter(r=>r.week===wk&&r.weekBest>0).sort((a,b)=>b.weekBest-a.weekBest):rows.filter(r=>r.best>0).sort((a,b)=>b.best-a.best);
  {const cb=Math.max(creatorBest,DEV?store.get('tm_devBest',0):0);const c=rowEl(0,'Dor','Creator of Mergy Monsters',cb?fmt(cb)+' ×5':'👑',false);c.classList.add('creator');c.firstChild.textContent='👑';L.append(c);}
